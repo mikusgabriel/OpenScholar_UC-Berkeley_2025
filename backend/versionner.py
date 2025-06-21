@@ -7,7 +7,8 @@ import os
 dotenv.load_dotenv()
 
 
-versionner = Agent("versionner",seed="versionner",port=8001,endpoint="http://localhost:8001/submit")
+versionner = Agent("versionner", seed="versionner", port=8001,
+                   endpoint="http://localhost:8001/submit")
 
 CHAT_MODEL = "gpt-4.1-nano"
 PROMPT_TEMPLATE = "You are a good boy"
@@ -167,13 +168,10 @@ tools = [
     }
 ]
 
-# will have to implement github functions with open ai chat functions?
-
-
 
 def query_openai_chat(query: str) -> str:
     client = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY"), 
+        api_key=os.getenv("OPENAI_API_KEY"),
     )
 
     chat_completion = client.responses.create(
@@ -194,6 +192,6 @@ async def handle_review(ctx, sender: str, msg: Request):
 
 
 if __name__ == "__main__":
-    print(query_openai_chat("give me the weather please!")[0].name)
+    print(query_openai_chat("commit this file")[0].name)
 
     versionner.run()

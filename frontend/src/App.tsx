@@ -4,15 +4,15 @@ import MarketPlacePage from "./pages/MarketplacePage";
 import AccountPage from "./pages/AccountPage";
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<EditorPage />} />
-                <Route path="/marketplace" element={<MarketPlacePage />} />
-                <Route path="/account" element={<AccountPage />} />
-            </Routes>
-        </Router>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<EditorPage />} />
+        <Route path="/marketplace" element={<MarketPlacePage />} />
+        <Route path="/account" element={<AccountPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

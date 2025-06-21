@@ -3,6 +3,7 @@ import os
 import tarfile
 import shutil
 
+
 def search_arxiv_ids(query, limit=5):
     url = "https://api.semanticscholar.org/graph/v1/paper/search"
     params = {
@@ -33,6 +34,7 @@ def search_arxiv_ids(query, limit=5):
             })
         if len(arxiv_papers) >= limit:
             break
+    print(arxiv_papers)
     return arxiv_papers
 
 
@@ -74,34 +76,46 @@ def download_and_extract_arxiv_source(arxiv_id, base_dir="."):
         print(f"Failed to download. Status {response.status_code}: {response.text}")
 
 
-def list_tex_files(arxiv_id, base_dir="."):
+def extract_info(arxiv_id, base_dir="."):
     folder_path = os.path.join(base_dir, arxiv_id)
 
     if not os.path.exists(folder_path):
         print(f"❌ Folder '{folder_path}' does not exist.")
         return []
-
-    tex_files = []
+    info = []
     for root, dirs, files in os.walk(folder_path):
         for file in files:
+
             if file.endswith(".tex"):
-                tex_files.append(os.path.join(root, file))
+                fpath = os.path.join(root, file)
+                print(f"Extracting: {fpath}")
+                with open(fpath) as f:
+                  file_text = f.read()
+                extracted_info = information_extraction(file_text)
+                extracted_info["path"] = fpath
+                info.append(extracted_info)
 
-    print(f"Found {len(tex_files)} .tex file(s) in '{folder_path}'")
-    return tex_files
-
-
-similar_papers = search_arxiv_ids("large language models for healthcare", limit=5)
-for papers in similar_papers:
-  print(papers["arxiv_id"])
-  download_and_extract_arxiv_source(papers["arxiv_id"])
-
+    return info
 
 def information_extraction(file_text):
   from openai import OpenAI
   from pydantic import BaseModel
 
   client = OpenAI(api_key=api_key)
+  prompt = (
+      "You are an AI agent tasked with evaluating whether a research paper contains information "
+      "relevant for comparing it with other studies.\n"
+      "- Always respond with:\n"
+      "  1. `true` or `false` (is the paper relevant for comparison?)\n"
+      "  2. A one-line Information Title (brief summary of what the paper is about)\n"
+      "  3. Relevant Details – key data, stats, or methods useful for comparison, if any\n"
+      "- If the result is `false`, still fill out the title and include minimal relevant detail explaining why it's not useful.\n\n"
+      "- If its latex formatting or figures, also mention \n"
+      "Ignore appendices and supplementary materials — focus only on the abstract, introduction, methods, results, and discussion.\n\n"
+      "Your output will be used to benchmark and compare future papers."
+  )
+
+
 
 
   class TexFileAnalysis(BaseModel):
@@ -110,10 +124,11 @@ def information_extraction(file_text):
       relevant_info: str
 
 
+
   response = client.responses.parse(
       model="gpt-4o-2024-08-06",
       input=[
-          {"role": "system", "content": "You are an agent which determines if the information in the paper is relevant to a research comparison. If the information is relevant, say true, else false. Determine the information title, and give the detailed relevant info to a comparison such data, stats, methodology."},
+          {"role": "system", "content": prompt},
           {
               "role": "user",
               "content": f"Latex dump: {file_text}",
@@ -122,4 +137,4 @@ def information_extraction(file_text):
       text_format=TexFileAnalysis,
   )
 
-  return response.output_parsed
+  return response.output_parsed.dict()
