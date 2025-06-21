@@ -1,11 +1,29 @@
 # schema.py
 from uagents import Model
 
+
 class Request(Model):
-    text: str
+    request: str
+    content: object | str
     agent_address: str
 
-class Response(Model):
+
+class Exporter_Response(Model):
+    content: str
+
+# to modify
+
+
+class Versionner_Response(Model):
+    content: str
+
+
+class Reviewer_Response(Model):
+    content: str
+
+
+class Orchestrator_Response(Model):
     timestamp: int
-    text: str
+    type: str
+    content: Exporter_Response | Reviewer_Response | Versionner_Response
     agent_address: str
