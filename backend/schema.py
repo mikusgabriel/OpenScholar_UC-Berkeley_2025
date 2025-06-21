@@ -1,4 +1,3 @@
-# schema.py
 from uagents import Model
 
 class Request(Model):
