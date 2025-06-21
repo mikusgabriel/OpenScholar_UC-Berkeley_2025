@@ -10,7 +10,7 @@ export default function MarkdownEditor({
   setContent: (value: string) => void;
 }) {
   return (
-    <Card className="h-full flex flex-col bg-orange-100 border-orange-200 overflow-hidden">
+    <Card className="h-full flex flex-col overflow-hidden">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="w-4 h-4" />

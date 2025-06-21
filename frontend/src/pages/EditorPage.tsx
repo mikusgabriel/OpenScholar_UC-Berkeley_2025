@@ -49,7 +49,7 @@ export default function App() {
                 </div>
 
                 {/* Sidebar */}
-                <div className="w-80 flex flex-col gap-4 overflow-y-auto">
+                <div className="w-80 flex flex-col gap-4 overflow-y-auto rounded-2xl border border-gray-200/50 bg-white/60 backdrop-blur-sm p-3 shadow-md">
                     {/* Repository Actions */}
                     <Card className="bg-white/70 backdrop-blur-sm border-white/20 shadow-lg shadow-purple-500/5">
                         <CardHeader className="pb-3">
