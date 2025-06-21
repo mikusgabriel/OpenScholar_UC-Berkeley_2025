@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import EditorPage from "./pages/EditorPage";
-import MarketplacePage from "./pages/MarketPlacePage";
+import MarketplacePage from "./pages/MarketplacePage";
 import AccountPage from "./pages/AccountPage";
 
 function App() {
