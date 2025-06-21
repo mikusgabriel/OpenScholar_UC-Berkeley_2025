@@ -74,6 +74,23 @@ def download_and_extract_arxiv_source(arxiv_id, base_dir="."):
         print(f"Failed to download. Status {response.status_code}: {response.text}")
 
 
+def list_tex_files(arxiv_id, base_dir="."):
+    folder_path = os.path.join(base_dir, arxiv_id)
+
+    if not os.path.exists(folder_path):
+        print(f"❌ Folder '{folder_path}' does not exist.")
+        return []
+
+    tex_files = []
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith(".tex"):
+                tex_files.append(os.path.join(root, file))
+
+    print(f"Found {len(tex_files)} .tex file(s) in '{folder_path}'")
+    return tex_files
+
+
 similar_papers = search_arxiv_ids("large language models for healthcare", limit=5)
 for papers in similar_papers:
   print(papers["arxiv_id"])
