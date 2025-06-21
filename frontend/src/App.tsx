@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import EditorPage from "./pages/EditorPage";
-import MarketplacePage from "./pages/MarketplacePage";
+import MarketPlacePage from "./pages/MarketPlacePage";
 import AccountPage from "./pages/AccountPage";
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
         <Router>
             <Routes>
                 <Route path="/" element={<EditorPage />} />
-                <Route path="/marketplace" element={<MarketplacePage />} />
+                <Route path="/marketplace" element={<MarketPlacePage />} />
                 <Route path="/account" element={<AccountPage />} />
             </Routes>
         </Router>
