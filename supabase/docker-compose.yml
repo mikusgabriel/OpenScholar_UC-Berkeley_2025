@@ -417,14 +417,23 @@ services:
   agents:
     container_name: agents
     restart: unless-stopped
-    build: ./backend
+    build: ../backend
     ports:
-      - "8000:8000"
       - "8001:8001"
       - "8002:8002"
       - "8003:8003"
+      - "8004:8004"
     depends_on:
-      - supabase-db
+      - db
+
+  frontend:
+    container_name: frontend
+    restart: unless-stopped
+    build: ../frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
 
   vector:
     container_name: supabase-vector
