@@ -230,11 +230,13 @@ def ultra_condenser(paper_reviews):
         "   - Skips fluff and repetition.\n"
         "   - Prioritizes technical accuracy, contradiction evidence, and novelty gaps.\n"
         "3. Be brutally honest and specific about quality, rigor, and whether it builds on or weakens the field."
+        "Relevancy score out of 10, this will determine how much users receive in FET token"
     )
 
     class UltraCondensedOutput(BaseModel):
         conflict: bool
         summary: str
+        relevant_score: int
 
     summaries = [paper["review"] for paper in paper_reviews if "review" in paper]
 
