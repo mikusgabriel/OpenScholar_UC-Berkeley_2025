@@ -1,9 +1,13 @@
 import requests
 import base64
+import os
+from dotenv import load_dotenv
 
-USERNAME = ""
-TOKEN = ""
-GITHUB_API_URL = ""
+load_dotenv()
+
+USERNAME = "testgyaccount"
+TOKEN = os.getenv("GITHUB_API_TOKEN")
+GITHUB_API_URL = "https://api.github.com"
 
 headers = {
     'Authorization': f'token {TOKEN}',
