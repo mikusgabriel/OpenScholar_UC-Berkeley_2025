@@ -13,7 +13,7 @@ const Commit = (message: string, content: string) => console.log("Committing:", 
 const CreatePullRequest = (repo: string, title: string, head: string, base: string, description: string) =>
     console.log("Creating PR:", { repo, title, head, base, description });
 
-function App() {
+export default function App() {
     const [content, setContent] = useState<string>("");
     const [message, setMessage] = useState<string>("");
 
@@ -40,9 +40,8 @@ function App() {
 
             <div className="container mx-auto p-4">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-120px)]">
-                    {/* Editor & Voice Recorder Section */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
-                        {/* Editor */}
+                        <MarkdownEditor content={content} setContent={setContent} />
                     </div>
 
                     {/* GitHub Actions Panel */}
@@ -148,5 +147,3 @@ function App() {
         </LayoutWrapper>
     )
 }
-
-export default App;
