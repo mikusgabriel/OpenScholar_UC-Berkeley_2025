@@ -3,7 +3,7 @@ import os
 import time
 from openai import OpenAI
 from uagents import Agent, Context
-from schema import Request, Orchestrator_Response, Versionner_Response, Exporter_Response, Reviewer_Response
+from schema import Request, Orchestrator_Response, Versionner_Response, Exporter_Response, Reviewer_Response, Reviewer_Request, Exporter_Request, Orchestrator_Request, Versionner_Request
 import json
 from globals import read_global_action_map
 agent_addresses = {"exporter": "agent1q053knjgqywahnys5vj4k0w967xxaay7rn7nmmvvxpjlxzdxht8xzemvcyy",
@@ -50,9 +50,9 @@ def query_openai_chat(query: str) -> str:
     return chat_completion.output
 
 
-@orchestrator.on_rest_post("/rest/post", Request, Orchestrator_Response)
-async def handle_post(ctx: Context, req: Request) -> Orchestrator_Response:
-    result = query_openai_chat(req)
+@orchestrator.on_rest_post("/rest/post", Orchestrator_Request, Orchestrator_Response)
+async def handle_post(ctx: Context, req: Orchestrator_Request) -> Orchestrator_Response:
+    result = query_openai_chat(req.request)
     if (result == "exporter"):
         await ctx.send(agent_addresses["exporter"], req.content)
         return Orchestrator_Response(
