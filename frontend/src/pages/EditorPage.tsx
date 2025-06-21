@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { GitBranch, GitCommit, GitPullRequest, GitFork, Download, FileText, Plus, Upload } from "lucide-react";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import LayoutWrapper from "@/components/layout-wrapper";
+import VoiceRecorder from "@/components/VoiceRecorder";
 
 // Mock API functions - replace with your actual implementations
 const CreateRepo = (name: string, description: string) => console.log("Creating repo:", name, description);
@@ -144,6 +145,7 @@ export default function App() {
                     </div>
                 </div>
             </div>
+            <VoiceRecorder research_text={content}/>
         </LayoutWrapper>
     )
 }
