@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { FileText, Upload } from "lucide-react"
 
 function App() {
@@ -11,9 +10,6 @@ function App() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <h1 className="text-black text-xl font-semibold">Research Paper Editor</h1>
-              <Badge variant="secondary" className="bg-green-900 text-green-100">
-                Active
-              </Badge>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-400">
               <FileText className="w-4 h-4" />0 characters
