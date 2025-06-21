@@ -189,7 +189,8 @@ def query_openai_chat(query: str) -> str:
 
 @versionner.on_message(model=Request)
 async def handle_review(ctx, sender: str, msg: Request):
-    print("will have to do github versionning")
+    result = query_openai_chat(msg)
+    print(result)
 
 
 if __name__ == "__main__":
