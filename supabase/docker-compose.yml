@@ -12,6 +12,8 @@ services:
     container_name: supabase-studio
     image: supabase/studio:2025.06.02-sha-8f2993d
     restart: unless-stopped
+    ports:
+      - "3000:3000"  # Expose port 3000
     healthcheck:
       test:
         [
@@ -431,7 +433,7 @@ services:
     restart: unless-stopped
     build: ../frontend
     ports:
-      - "3000:3000"
+      - "2000:2000"
     depends_on:
       - db
 
