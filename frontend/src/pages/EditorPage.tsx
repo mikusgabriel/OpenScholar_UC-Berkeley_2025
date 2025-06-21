@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +7,7 @@ import { GitBranch, GitCommit, GitPullRequest, GitFork, Download, FileText, Plus
 import MarkdownEditor from "@/components/MarkdownEditor"
 import LayoutWrapper from "@/components/layout-wrapper"
 import VoiceRecorder from "@/components/VoiceRecorder"
+import { RequestExport } from "@/api/api"
 
 // Mock API functions - replace with your actual implementations
 const CreateRepo = (name: string, description: string) => console.log("Creating repo:", name, description)
@@ -19,24 +18,6 @@ const CreatePullRequest = (repo: string, title: string, head: string, base: stri
 export default function App() {
     const [content, setContent] = useState<string>("")
     const [message, setMessage] = useState<string>("")
-
-    async function RequestExport() {
-        try {
-            const response = await fetch("http://localhost:8000/rest/post", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    request: "I want my research paper to be exported to latex",
-                    content: content,
-                }),
-            })
-            if (!response.ok) throw new Error("Failed to send transcript")
-            console.log(await response.text())
-            console.log("Transcript sent successfully")
-        } catch (error) {
-            console.error("Export failed:", error)
-        }
-    }
 
     return (
         <LayoutWrapper>
@@ -144,7 +125,7 @@ export default function App() {
                         </CardHeader>
                         <CardContent>
                             <Button
-                                onClick={() => RequestExport()}
+                                onClick={() => RequestExport(content)}
                                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xs py-2 shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
                                 disabled={!content.trim()}
                                 size="sm"

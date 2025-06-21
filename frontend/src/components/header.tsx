@@ -57,8 +57,8 @@ export default function Header() {
 
           {/* Character Count */}
           <div className="hidden lg:flex items-center gap-2 text-sm text-gray-500 bg-gray-50/80 rounded-full px-3 py-1.5 backdrop-blur-sm">
-            <FileText className="w-4 h-4" />
-            <span className="font-medium">0 chars</span>
+            {/* <FileText className="w-4 h-4" /> */}
+            {/* <span className="font-medium">0 chars</span> */}
           </div>
 
           {/* Mobile Menu Button */}
