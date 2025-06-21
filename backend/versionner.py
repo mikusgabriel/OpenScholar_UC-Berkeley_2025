@@ -1,6 +1,6 @@
 from openai import OpenAI
 from uagents import Agent
-from schema import Request
+from schema import Versionner_Request
 import dotenv
 import os
 
@@ -185,8 +185,8 @@ def query_openai_chat(query: str) -> str:
     return chat_completion.output
 
 
-@versionner.on_message(model=Request)
-async def handle_review(ctx, sender: str, msg: Request):
+@versionner.on_message(model=Versionner_Request)
+async def handle_review(ctx, sender: str, msg: Versionner_Request):
     result = query_openai_chat(msg)
     print(result)
 

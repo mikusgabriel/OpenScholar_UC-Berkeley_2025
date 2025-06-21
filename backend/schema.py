@@ -1,4 +1,5 @@
 from uagents import Model
+from typing import Union
 
 
 class Exporter_Request(Model):
@@ -33,5 +34,5 @@ class Reviewer_Response(Model):
 class Orchestrator_Response(Model):
     timestamp: int
     type: str
-    content: Exporter_Response | Reviewer_Response | Versionner_Response
+    content: Union[Exporter_Response, Reviewer_Response, Versionner_Response]
     agent_address: str

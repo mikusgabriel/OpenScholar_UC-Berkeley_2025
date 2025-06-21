@@ -1,6 +1,6 @@
 from globals import write_global_action_map, read_global_action_map
 from uagents import Agent
-from schema import Request
+from schema import Exporter_Request
 import tempfile
 import subprocess
 import os
@@ -34,7 +34,7 @@ def latex_to_blob(latex: str):
         return result
 
 
-@exporter.on_message(model=Request)
+@exporter.on_message(model=Exporter_Request)
 async def handle_review(ctx, sender: str, msg):
     blob = latex_to_blob(msg)
     write_global_action_map({"exporter": {"content": blob}})
