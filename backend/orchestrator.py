@@ -3,7 +3,7 @@ import os
 import time
 from openai import OpenAI
 from uagents import Agent, Context
-from schema import Request, Orchestrator_Response, Versionner_Response, Exporter_Response, Reviewer_Response, Reviewer_Request, Exporter_Request, Orchestrator_Request, Versionner_Request
+from schema import Orchestrator_Response, Versionner_Response, Exporter_Response, Reviewer_Response, Reviewer_Request, Exporter_Request, Orchestrator_Request, Versionner_Request
 import json
 from globals import read_global_action_map
 agent_addresses = {"exporter": "agent1q053knjgqywahnys5vj4k0w967xxaay7rn7nmmvvxpjlxzdxht8xzemvcyy",
