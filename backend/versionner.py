@@ -1,6 +1,6 @@
 from uagents import Agent
 
-exporter = Agent("exporter",seed="exporter",port=8002,endpoint="http://localhost:8002/submit")
+exporter = Agent("versionner",seed="versionner",port=8001,endpoint="http://localhost:8001/submit")
 
 @exporter.on_message(model={})
 async def handle_review(ctx, sender: str, msg):
