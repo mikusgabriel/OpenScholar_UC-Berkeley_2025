@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Mic, StopCircle} from "lucide-react"
+import { Mic, StopCircle } from "lucide-react"
 
 export default function VoiceRecorder({ research_text }: { research_text: string }) {
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -84,7 +84,7 @@ export default function VoiceRecorder({ research_text }: { research_text: string
     return (
         <button
             onClick={toggleRecording}
-            className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 text-white rounded-full p-4 shadow-lg z-50 ${isRecording ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"
+            className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 text-white rounded-full p-4 shadow-lg z-50 ${isRecording ? "bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600" : "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                 }`}
         >
             {isRecording ? <StopCircle className="w-6 h-6" /> : <Mic className="w-6 h-6" />}

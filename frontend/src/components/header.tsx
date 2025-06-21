@@ -91,12 +91,6 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-
-            {/* Mobile Character Count */}
-            <div className="flex items-center gap-2 text-sm text-gray-500 px-4 py-2">
-              <FileText className="w-4 h-4" />
-              <span className="font-medium">0 characters</span>
-            </div>
           </nav>
         </div>
       </div>
