@@ -1,11 +1,11 @@
+# schema.py
 from uagents import Model
-from pydantic import BaseModel
 
-class Request(BaseModel):
+class Request(Model):
     text: str
     agent_address: str
 
-class Response(BaseModel):
+class Response(Model):
     timestamp: int
     text: str
     agent_address: str
