@@ -298,10 +298,10 @@ export async function getPapersList(): Promise<Paper[]> {
     }
 }
 
-export async function getPaperById(paperId: string): Promise<Paper | null> {
+export async function getPaperById(paperTitle: string): Promise<Paper | null> {
     try {
         const papers = await getPapersList();
-        const paper = papers.find(p => p.id === paperId);
+        const paper = papers.find(p => p.title === paperTitle);
 
         if (paper) {
             // Try to get additional repository info
@@ -320,7 +320,7 @@ export async function getPaperById(paperId: string): Promise<Paper | null> {
 
         return paper || null;
     } catch (error) {
-        console.error("Error fetching paper by ID:", error);
+        console.error("Error fetching paper by title:", error);
         return null;
     }
 }

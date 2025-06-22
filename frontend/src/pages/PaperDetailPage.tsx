@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import LayoutWrapper from "@/components/layout-wrapper";
 import { FileText, Calendar, User, GitBranch, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,24 +6,39 @@ import { useState, useEffect } from "react";
 import { getPaperById } from "@/api/api";
 import type { Paper } from "@/api/api";
 
+interface LocationState {
+    paper?: Paper;
+}
+
 export default function PaperDetailPage() {
-    const { id } = useParams();
-    const [currentPaper, setCurrentPaper] = useState<Paper | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { id: title } = useParams();
+    const location = useLocation();
+    const { paper: passedPaper } = (location.state as LocationState) || {};
+
+    const [currentPaper, setCurrentPaper] = useState<Paper | null>(passedPaper || null);
+    const [loading, setLoading] = useState(!passedPaper);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        // If we have the paper data from navigation state, use it
+        if (passedPaper) {
+            setCurrentPaper(passedPaper);
+            setLoading(false);
+            return;
+        }
+
+        // Otherwise, fetch the paper data
         const fetchData = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                if (!id) {
-                    setError("Paper ID is required");
+                if (!title) {
+                    setError("Paper title is required");
                     return;
                 }
 
-                const paper = await getPaperById(id);
+                const paper = await getPaperById(title);
                 if (paper) {
                     setCurrentPaper(paper);
                 } else {
@@ -38,7 +53,7 @@ export default function PaperDetailPage() {
         };
 
         fetchData();
-    }, [id]);
+    }, [title, passedPaper]);
 
     if (loading) {
         return (
@@ -132,7 +147,7 @@ export default function PaperDetailPage() {
                                         View Pull Requests
                                     </Button>
                                     <Button
-                                        onClick={() => window.location.href = `/papers/${currentPaper.id}/editor`}
+                                        onClick={() => window.location.href = `/papers/${currentPaper.title}/edit`}
                                         className="bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-lg hover:shadow-green-500/25 transition-all duration-200"
                                     >
                                         Edit Paper

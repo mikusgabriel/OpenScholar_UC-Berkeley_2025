@@ -2,6 +2,7 @@ import LayoutWrapper from "@/components/layout-wrapper";
 import { Calendar, User, GitBranch, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getPapersList } from "@/api/api";
 import type { Paper } from "@/api/api";
 
@@ -9,6 +10,7 @@ export default function PapersPage() {
     const [papers, setPapers] = useState<Paper[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,6 +30,12 @@ export default function PapersPage() {
 
         fetchData();
     }, []);
+
+    const handlePaperClick = (paper: Paper) => {
+        navigate(`/papers/${paper.title}`, {
+            state: { paper }
+        });
+    };
 
     if (loading) {
         return (
@@ -74,9 +82,9 @@ export default function PapersPage() {
                     <div className="grid gap-4">
                         {papers.map((paper) => (
                             <div
-                                key={paper.id}
+                                key={paper.title}
                                 className="p-4 bg-gradient-to-r from-white/50 to-purple-50/30 rounded-lg border border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer"
-                                onClick={() => window.location.href = `/papers/${paper.id}`}
+                                onClick={() => handlePaperClick(paper)}
                             >
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
