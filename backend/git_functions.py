@@ -126,6 +126,11 @@ def list_repository_branches(repo):
     resp = requests.get(url, headers=headers)
     return {"status_code": resp.status_code, "data": resp.json()}
 
+def get_repository_info(repo):
+    url = f"{GITHUB_API_URL}/repos/{USERNAME}/{repo}"
+    resp = requests.get(url, headers=headers)
+    return {"status_code": resp.status_code, "data": resp.json()}
+
 def list_pull_requests(repo, state="open"):
     url = f"{GITHUB_API_URL}/repos/{USERNAME}/{repo}/pulls?state={state}"
     resp = requests.get(url, headers=headers)
@@ -167,4 +172,9 @@ def merge_pull_request_func(repo, pull_number, commit_title=None, commit_message
         payload["commit_message"] = commit_message
     url = f"{GITHUB_API_URL}/repos/{USERNAME}/{repo}/pulls/{pull_number}/merge"
     resp = requests.put(url, headers=headers, json=payload)
+    return {"status_code": resp.status_code, "data": resp.json()}
+
+def list_repositories():
+    url = f"{GITHUB_API_URL}/user/repos"
+    resp = requests.get(url, headers=headers)
     return {"status_code": resp.status_code, "data": resp.json()}

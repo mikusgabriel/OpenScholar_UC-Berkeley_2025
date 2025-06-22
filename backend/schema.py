@@ -60,7 +60,6 @@ class Transferer_Response(Model):
     type: Literal["transferer"]
     content:  Union[str, dict, object]
 
-
 class Branch_Request(Model):
     repository_name: str
 

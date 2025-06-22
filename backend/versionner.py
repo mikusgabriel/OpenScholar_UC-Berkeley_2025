@@ -14,6 +14,7 @@ from git_functions import (
     list_repository_files,
     list_repository_branches,
     get_repository_info,
+    list_repositories,
     list_pull_requests,
     create_pull_request_func,
     update_pull_request_func,
@@ -357,6 +358,8 @@ function_map = {
     "update_pulupdate_pull_request_funcl_request": update_pull_request_func,
     "fork_repository": fork_repository,
     "merge_pull_request_func": merge_pull_request_func,
+    "list_repository_branches": list_repository_branches,
+    "list_repositories": list_repositories,
 }
 
 @versionner.on_message(model=Versionner_Request)
