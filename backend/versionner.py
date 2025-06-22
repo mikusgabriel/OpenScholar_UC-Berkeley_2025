@@ -1,6 +1,6 @@
 from openai import OpenAI
 from uagents import Agent
-from schema import Versionner_Request
+from schema import Versionner_Request, Branch_Request, Repository_Request
 import dotenv
 import os
 import json
@@ -12,6 +12,8 @@ from git_functions import (
     checkout_existing_branch,
     pull_branch_commit,
     list_repository_files,
+    list_repository_branches,
+    get_repository_info,
     list_pull_requests,
     create_pull_request_func,
     update_pull_request_func,
@@ -377,6 +379,12 @@ async def handle_review(ctx, sender: str, msg: Versionner_Request):
             f"Function {function_name} not found in function_map.")
         write_global_action_map("versionner", {"error": "Function not found"})
 
+@versionner.on_message(model=Branch_Request)
+async def handle_branch_request(ctx, sender: str, msg: Branch_Request):
+    ctx.logger.info(f"Branch request for repository: {msg.repository_name}")
+    result = list_repository_branches(msg.repository_name)
+    ctx.logger.info(f"Branch list result: {result}")
+    write_global_action_map("versionner", result)
 
 if __name__ == "__main__":
     versionner.run()
