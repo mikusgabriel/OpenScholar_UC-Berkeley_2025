@@ -24,8 +24,8 @@ def create_github_repo(name, description="", private=True):
     resp = requests.post(url, headers=headers, json=payload)
     return {"status_code": resp.status_code, "data": resp.json()}
 
-def commit_file_to_repo(repo, path, content, message):
-    ref_url = f'{GITHUB_API_URL}/repos/{USERNAME}/{repo}/git/ref/heads/main'
+def commit_file_to_repo(repo, path, content, message, branch="main"):
+    ref_url = f'{GITHUB_API_URL}/repos/{USERNAME}/{repo}/git/ref/heads/{branch}'
     ref_resp = requests.get(ref_url, headers=headers)
     ref_json = ref_resp.json()
 
@@ -75,7 +75,7 @@ def commit_file_to_repo(repo, path, content, message):
     ).json()
 
     update_resp = requests.patch(
-        f'{GITHUB_API_URL}/repos/{USERNAME}/{repo}/git/refs/heads/main',
+        f'{GITHUB_API_URL}/repos/{USERNAME}/{repo}/git/refs/heads/{branch}',
         headers=headers,
         json={"sha": new_commit['sha']}
     )
@@ -168,3 +168,10 @@ def merge_pull_request_func(repo, pull_number, commit_title=None, commit_message
     url = f"{GITHUB_API_URL}/repos/{USERNAME}/{repo}/pulls/{pull_number}/merge"
     resp = requests.put(url, headers=headers, json=payload)
     return {"status_code": resp.status_code, "data": resp.json()}
+
+def pull_chain():
+    print(create_new_branch("test-repo", "mybranch"))
+    print(checkout_existing_branch("test-repo", "mybranch"))
+    print(commit_file_to_repo("test-repo", "changes.txt", "changes ", "changes ", "mybranch"))
+    a = create_pull_request_func("test-repo", "test", "mybranch", "main", "test")
+    return {"status_code": resp.status_code, "data": a.json()}
