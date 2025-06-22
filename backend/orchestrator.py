@@ -80,7 +80,7 @@ async def handle_post(ctx: Context, req: Orchestrator_Request) -> Orchestrator_R
 
     elif (result == "reviewer"):
         await ctx.send(agent_addresses[result], message=Reviewer_Request(type=result, content=req.content))
-
+        ctx.logger.info(f"Reviewer request sent to {read_global_action_map(result)}")
         return Orchestrator_Response(
             timestamp=int(time.time()),
             type=result,

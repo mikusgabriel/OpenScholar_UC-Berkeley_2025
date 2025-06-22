@@ -148,12 +148,14 @@ export async function getRepositoriesList(): Promise<RepositoryInfo[]> {
             }),
         });
 
+        console.log(response);
         if (!response.ok) {
             throw new Error("Failed to fetch repositories list");
         }
 
         const data = await response.json();
-        return data.data || [];
+        console.log(data);
+        return data.content.content.data || [];
     } catch (error) {
         console.error("Error fetching repositories list:", error);
         return [];
