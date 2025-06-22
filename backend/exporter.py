@@ -46,7 +46,7 @@ def latex_to_pdf_blob(latex_string):
     )
     with open(pdf_path, "rb") as f:
         pdf_blob = f.read()
-        write_global_action_map({"exporter": {"result": pdf_blob}})
+        write_global_action_map("exporter", {"result": pdf_blob})
         return pdf_blob
 
     return pdf_blob
@@ -65,7 +65,7 @@ async def handle_review(ctx: Context, sender: str, msg: Exporter_Request):
     blob = latex_to_pdf_blob(latex)
     ctx.logger.info(
         "Received POST request with datacontent: %s", blob)
-    write_global_action_map({"exporter": {"content": blob}})
+    write_global_action_map("exporter", {"content": blob})
 
 
 if __name__ == "__main__":

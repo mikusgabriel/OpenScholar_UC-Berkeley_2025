@@ -5,42 +5,42 @@ from pydantic import BaseModel
 
 class Exporter_Request(Model):
     type: Literal["exporter"]
-    content: str
+    content:  Union[str, dict, object    ]
 
 
 class Versionner_Request(Model):
     type: Literal["versionner"]
-    content: str
+    content:  Union[str, dict, object    ]
 
 
 class Reviewer_Request(Model):
     type: Literal["reviewer"]
-    content: str
+    content:  Union[str, dict, object    ]
 
 
 class Orchestrator_Request(Model):
     request: str
-    content: str
+    content: Union[str, dict, object    ]
 
 
 class Exporter_Response(Model):
     type: Literal["exporter"]
-    content: str
+    content:  Union[str, dict, object    ]
 
 
 class Versionner_Response(Model):
     type: Literal["versionner"]
-    content: str
+    content:  Union[str, dict, object    ]
 
 
 class Reviewer_Response(Model):
     type: Literal["reviewer"]
-    content: str
+    content:  Union[str, dict, object    ]
 
 
 class Error_Response(Model):
     type: Literal["error"]
-    error: str
+    error:  Union[str, dict, object    ]
 
 
 class Orchestrator_Response(Model):

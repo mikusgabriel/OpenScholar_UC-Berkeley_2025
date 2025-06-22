@@ -14,6 +14,16 @@ headers = {
     'Accept': 'application/vnd.github+json'
 }
 
+def create_github_repo(name, description="", private=True):
+    url = f'{GITHUB_API_URL}/user/repos'
+    payload = {
+        "name": name,
+        "description": description,
+        "private": private
+    }
+    resp = requests.post(url, headers=headers, json=payload)
+    return {"status_code": resp.status_code, "data": resp.json()}
+
 def commit_file_to_repo(repo, path, content, message):
     ref_url = f'{GITHUB_API_URL}/repos/{USERNAME}/{repo}/git/ref/heads/main'
     ref_resp = requests.get(ref_url, headers=headers)

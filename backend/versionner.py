@@ -3,6 +3,22 @@ from uagents import Agent
 from schema import Versionner_Request
 import dotenv
 import os
+import json
+from git_functions import (
+    create_github_repo,
+    commit_file_to_repo,
+    get_commit_history,
+    create_new_branch,
+    checkout_existing_branch,
+    pull_branch_commit,
+    list_repository_files,
+    list_pull_requests,
+    create_pull_request_func,
+    update_pull_request_func,
+    fork_repository,
+    merge_pull_request_func
+)
+from globals import write_global_action_map, read_global_action_map
 
 dotenv.load_dotenv()
 
@@ -11,19 +27,77 @@ versionner = Agent("versionner", seed="versionner", port=8001,
                    endpoint="http://localhost:8001/submit")
 
 CHAT_MODEL = "gpt-4.1-nano"
-PROMPT_TEMPLATE = "You are a good boy"
+PROMPT_TEMPLATE = """
+You are an AI backend automation agent for version control. You have functions you can call that allow you to interact with github, call upon them to satisfy the user's request
+Do not include any other text or explanations.
+branch is main by default.
+YOUR username is testgyaccount
+
+If the user does not specify a branch, use main.
+make sure to pass all arguments to the functions you call.
+You can use the following functions:
+    "create_github_repo"
+    "commit_file"
+    "get_commit_history"
+    "create_branch"
+    "checkout_branch"
+    "pull"
+    "list_files"
+    "list_pull_requests"
+    "create_pull_request"
+    "update_pull_request"
+    "fork_repo"
+    "merge_pull_request"
+Here is the user query:
+"""
+
 tools = [
     {
         "type": "function",
-        "name": "commit_file_to_repo",
-        "description": "Commit a file to a GitHub repository. Handles both empty and existing repos.",
+        "name": "create_github_repo",
+        "description": "Create a new GitHub repository.",
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."},
-                "path": {"type": "string", "description": "File path in the repo."},
-                "content": {"type": "string", "description": "File content as plain text."},
-                "message": {"type": "string", "description": "Commit message."}
+                "name": {
+                    "type": "string",
+                    "description": "Name of the new repository."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Repository description."
+                },
+                "private": {
+                    "type": "boolean",
+                    "description": "Whether the repo is private."
+                }
+            },
+            "required": ["name"]
+        }
+    },
+    {
+        "type": "function",
+        "name": "commit_file_to_repo",
+        "description": "Commit a new file to a GitHub repository.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                },
+                "path": {
+                    "type": "string",
+                    "description": "Path of the file in the repo."
+                },
+                "content": {
+                    "type": "string",
+                    "description": "Content of the file."
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Commit message."
+                }
             },
             "required": ["repo", "path", "content", "message"]
         }
@@ -31,11 +105,14 @@ tools = [
     {
         "type": "function",
         "name": "get_commit_history",
-        "description": "Retrieve the commit history for a given GitHub repository.",
+        "description": "Get the commit history of a repository.",
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."}
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                }
             },
             "required": ["repo"]
         }
@@ -47,10 +124,16 @@ tools = [
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."},
-                "new_branch": {"type": "string", "description": "Name of the new branch."}
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                },
+                "branch": {
+                    "type": "string",
+                    "description": "New branch name."
+                }
             },
-            "required": ["repo", "new_branch"]
+            "required": ["repo", "branch"]
         }
     },
     {
@@ -60,8 +143,14 @@ tools = [
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."},
-                "branch": {"type": "string", "description": "Branch name to check out."}
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                },
+                "branch": {
+                    "type": "string",
+                    "description": "Branch name to check out."
+                }
             },
             "required": ["repo", "branch"]
         }
@@ -73,21 +162,33 @@ tools = [
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."},
-                "branch": {"type": "string", "description": "Branch name."}
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                },
+                "branch": {
+                    "type": "string",
+                    "description": "Branch name (default: main)."
+                }
             },
-            "required": ["repo", "branch"]
+            "required": ["repo"]
         }
     },
     {
         "type": "function",
         "name": "list_repository_files",
-        "description": "List all files in a repository branch recursively.",
+        "description": "List all files in a repository branch.",
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."},
-                "branch": {"type": "string", "description": "Branch name. Default is 'main'."}
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                },
+                "branch": {
+                    "type": "string",
+                    "description": "Branch name (default: main)."
+                }
             },
             "required": ["repo"]
         }
@@ -95,12 +196,18 @@ tools = [
     {
         "type": "function",
         "name": "list_pull_requests",
-        "description": "List pull requests for a repository.",
+        "description": "List pull requests in a repository.",
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."},
-                "state": {"type": "string", "description": "Pull request state: open, closed, or all."}
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                },
+                "state": {
+                    "type": "string",
+                    "description": "State of PRs: open, closed, or all."
+                }
             },
             "required": ["repo"]
         }
@@ -112,11 +219,26 @@ tools = [
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."},
-                "title": {"type": "string", "description": "Title of the PR."},
-                "head": {"type": "string", "description": "Branch with your changes."},
-                "base": {"type": "string", "description": "Branch to merge into."},
-                "body": {"type": "string", "description": "Description of the PR."}
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Title of the PR."
+                },
+                "head": {
+                    "type": "string",
+                    "description": "Branch where changes are implemented."
+                },
+                "base": {
+                    "type": "string",
+                    "description": "Branch you want to merge into."
+                },
+                "body": {
+                    "type": "string",
+                    "description": "Description of the PR."
+                }
             },
             "required": ["repo", "title", "head", "base"]
         }
@@ -128,24 +250,45 @@ tools = [
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."},
-                "pull_number": {"type": "integer", "description": "Pull request number."},
-                "title": {"type": "string", "description": "Updated title."},
-                "body": {"type": "string", "description": "Updated body."},
-                "state": {"type": "string", "description": "New state: open or closed."}
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                },
+                "pull_number": {
+                    "type": "integer",
+                    "description": "Pull request number."
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Updated title."
+                },
+                "body": {
+                    "type": "string",
+                    "description": "Updated body."
+                },
+                "state": {
+                    "type": "string",
+                    "description": "State: open or closed."
+                }
             },
-            "required": ["repo", "pull_number", "title", "body", "state"]
+            "required": ["repo", "pull_number"]
         }
     },
     {
         "type": "function",
         "name": "fork_repository",
-        "description": "Fork a public repository into your account.",
+        "description": "Fork a repository from another owner.",
         "parameters": {
             "type": "object",
             "properties": {
-                "owner": {"type": "string", "description": "Owner of the original repo."},
-                "repo": {"type": "string", "description": "Repository name."}
+                "owner": {
+                    "type": "string",
+                    "description": "Owner of the repo to fork."
+                },
+                "repo": {
+                    "type": "string",
+                    "description": "Name of the repo to fork."
+                }
             },
             "required": ["owner", "repo"]
         }
@@ -153,21 +296,35 @@ tools = [
     {
         "type": "function",
         "name": "merge_pull_request_func",
-        "description": "Merge a pull request using the specified method.",
+        "description": "Merge a pull request into the base branch.",
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {"type": "string", "description": "Repository name."},
-                "pull_number": {"type": "integer", "description": "Pull request number."},
-                "commit_title": {"type": "string", "description": "Title of the merge commit."},
-                "commit_message": {"type": "string", "description": "Commit message content."},
-                "merge_method": {"type": "string", "description": "Merge method: merge, squash, or rebase."}
+                "repo": {
+                    "type": "string",
+                    "description": "Repository name."
+                },
+                "pull_number": {
+                    "type": "integer",
+                    "description": "Pull request number."
+                },
+                "commit_title": {
+                    "type": "string",
+                    "description": "Title for merge commit."
+                },
+                "commit_message": {
+                    "type": "string",
+                    "description": "Message for merge commit."
+                },
+                "merge_method": {
+                    "type": "string",
+                    "description": "merge, squash, or rebase."
+                }
             },
             "required": ["repo", "pull_number"]
         }
     }
 ]
-
 
 def query_openai_chat(query: str) -> str:
     client = OpenAI(
@@ -182,16 +339,44 @@ def query_openai_chat(query: str) -> str:
         ],
         tools=tools,
     )
+
     return chat_completion.output
 
+function_map = {
+    "create_github_repo": create_github_repo,
+    "commit_file_to_repo": commit_file_to_repo,
+    "get_commit_history": get_commit_history,
+    "create_new_branch": create_new_branch,
+    "checkout_existing_branch": checkout_existing_branch,
+    "pull_branch_commit": pull_branch_commit,
+    "list_repository_files": list_repository_files,
+    "list_pull_requests": list_pull_requests,
+    "create_pull_request_func": create_pull_request_func,
+    "update_pulupdate_pull_request_funcl_request": update_pull_request_func,
+    "fork_repository": fork_repository,
+    "merge_pull_request_func": merge_pull_request_func,
+}
 
 @versionner.on_message(model=Versionner_Request)
 async def handle_review(ctx, sender: str, msg: Versionner_Request):
-    result = query_openai_chat(msg)
-    print(result)
+    ctx.logger.info(msg.content["type"] + " " + msg.content["content"] + " " + msg.content["message"])
+    result = query_openai_chat(msg.content["type"] + " " + msg.content["content"] + " " + msg.content["message"])
+    ctx.logger.info(result)
+    function_name = result[0].name
+    arguments = json.loads(result[0].arguments)
+    ctx.logger.info(function_name)
+
+    if function_name in function_map:
+        ctx.logger.info(
+            f"Calling function: {function_name} with arguments: {arguments}")
+        result = function_map[function_name](**arguments)
+        ctx.logger.info(f"Function result: {result}")
+        write_global_action_map("versionner", result)
+    else:
+        ctx.logger.error(
+            f"Function {function_name} not found in function_map.")
+        write_global_action_map("versionner", {"error": "Function not found"})
 
 
 if __name__ == "__main__":
-    print(query_openai_chat("commit this file")[0].name)
-
     versionner.run()

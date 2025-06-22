@@ -15,14 +15,6 @@ import LayoutWrapper from "@/components/layout-wrapper";
 import VoiceRecorder from "@/components/VoiceRecorder";
 import { RequestExport } from "@/api/api";
 
-const CreatePullRequest = (
-  repo: string,
-  title: string,
-  head: string,
-  base: string,
-  description: string
-) => console.log("Creating PR:", { repo, title, head, base, description });
-
 export default function App() {
   const [content, setContent] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -33,21 +25,31 @@ export default function App() {
       const dict = {
         export: "I want my research paper to be exported to latex",
         "create pull request":
-          "I want to create a pull request for my research paper with description: ",
+          "I want to create a pull request for my research paper with description: " +
+          message,
         commit:
-          "I want to commit my research paper to the repository with message: ",
+          "I want to commit my research paper to the repository with message: " +
+          message,
         "create repository":
-          "I want to create a repository for my research paper with name: ",
+          "I want to create a repository for my research paper with name: " +
+          message,
       };
 
       request = {
-        request: dict[type as keyof typeof dict] + " " + message,
-        content: content,
+        request: dict[type as keyof typeof dict] + " " + query,
+        content: {
+          type: dict[type as keyof typeof dict],
+          content: content,
+          message: message,
+        },
       };
     } else {
       request = {
         request: query,
-        content: content,
+        content: {
+          type: "voice",
+          content: content,
+        },
       };
     }
 
@@ -57,7 +59,8 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request),
       });
-      if (!response.ok) throw new Error("Failed to send transcript");
+      console.log(request);
+      if (!response.ok) throw new Error("Failed to send action to server");
       console.log(await response.text());
       console.log("Transcript sent successfully");
     } catch (error) {

@@ -8,5 +8,6 @@ dependencies = [
     "asyncio>=3.4.3",
     "dotenv>=0.9.9",
     "openai>=1.90.0",
+    "pypandoc>=1.15",
     "uagents>=0.22.5",
 ]
