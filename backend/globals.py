@@ -11,9 +11,9 @@ if not os.path.exists(GLOBAL_ACTION_MAP_FILE):
         json.dump({"exporter": {}, "reviewer": {}, "versionner": {}}, f)
 
 
-def read_global_action_map():
+def read_global_action_map(agent_type: str):
     with open(GLOBAL_ACTION_MAP_FILE, "r") as f:
-        return json.load(f)
+        return json.load(f)[agent_type].content
 
 
 def write_global_action_map(data):

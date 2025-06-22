@@ -1,5 +1,6 @@
 export async function RequestExport(content : string) {
     try {
+        console.log("Sending transcript for export:", content);
         const response = await fetch("http://localhost:8000/rest/post", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

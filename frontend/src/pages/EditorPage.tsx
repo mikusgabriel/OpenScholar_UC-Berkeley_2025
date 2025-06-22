@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { GitBranch, GitCommit, GitPullRequest, GitFork, Download, FileText, Plus, Upload } from "lucide-react"
+import { GitCommit, GitPullRequest, FileText, Plus, Upload } from "lucide-react"
 import MarkdownEditor from "@/components/MarkdownEditor"
 import LayoutWrapper from "@/components/layout-wrapper"
 import VoiceRecorder from "@/components/VoiceRecorder"
 import { RequestExport } from "@/api/api"
 
-// Mock API functions - replace with your actual implementations
+// Mock API functions - replace with your actual implementati`ons
 const CreateRepo = (name: string, description: string) => console.log("Creating repo:", name, description)
 const Commit = (message: string, content: string) => console.log("Committing:", message, content)
 const CreatePullRequest = (repo: string, title: string, head: string, base: string, description: string) =>
@@ -69,38 +69,6 @@ export default function App() {
                             </div>
 
                             <Separator className="bg-purple-200/30" />
-
-                            <div className="grid grid-cols-2 gap-2">
-                                <Button
-                                    onClick={() => console.log("Pull:", message)}
-                                    variant="outline"
-                                    size="sm"
-                                    className="bg-white/80 border-purple-200/50 text-gray-800 hover:bg-purple-50/50 text-xs py-1 transition-all duration-200"
-                                >
-                                    <Download className="w-3 h-3 mr-1" />
-                                    Pull
-                                </Button>
-
-                                <Button
-                                    onClick={() => console.log("Create Branch:", message)}
-                                    variant="outline"
-                                    size="sm"
-                                    className="bg-white/80 border-purple-200/50 text-gray-800 hover:bg-purple-50/50 text-xs py-1 transition-all duration-200"
-                                >
-                                    <GitBranch className="w-3 h-3 mr-1" />
-                                    Branch
-                                </Button>
-                            </div>
-
-                            <Button
-                                onClick={() => console.log("Checkout:", message)}
-                                variant="outline"
-                                className="w-full bg-white/80 border-purple-200/50 text-gray-800 hover:bg-purple-50/50 text-xs py-2 transition-all duration-200"
-                                size="sm"
-                            >
-                                <GitFork className="w-3 h-3 mr-1" />
-                                Checkout
-                            </Button>
 
                             <Button
                                 onClick={() =>
