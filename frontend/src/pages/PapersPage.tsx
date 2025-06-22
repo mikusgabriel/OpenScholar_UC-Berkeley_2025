@@ -93,7 +93,7 @@ export default function PapersPage() {
                                             </div>
                                             <div className="flex items-center gap-1">
                                                 <GitBranch className="w-4 h-4" />
-                                                <span>{paper.branches.length} branches</span>
+                                                {/* <span>{paper.branches.length} branches</span> */}
                                             </div>
                                         </div>
                                     </div>

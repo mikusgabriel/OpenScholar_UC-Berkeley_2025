@@ -225,7 +225,7 @@ export interface Paper {
     updatedAt: string;
     description: string;
     repository: string;
-    branches: string[];
+    // branches: string[];
     status: string;
 }
 
@@ -245,7 +245,7 @@ export async function getPapersList(): Promise<Paper[]> {
                     updatedAt: "2024-01-20",
                     description: "A comprehensive study on the implementation of ML algorithms in medical diagnosis.",
                     repository: "ml-healthcare-research",
-                    branches: ["main", "feature/data-analysis", "feature/validation"],
+                    // branches: ["main", "feature/data-analysis", "feature/validation"],
                     status: "active"
                 },
                 {
@@ -256,7 +256,7 @@ export async function getPapersList(): Promise<Paper[]> {
                     updatedAt: "2024-01-18",
                     description: "Exploring the impact of quantum computing on current cryptographic methods.",
                     repository: "quantum-crypto-study",
-                    branches: ["main", "feature/quantum-algorithms", "feature/security-analysis"],
+                    // branches: ["main", "feature/quantum-algorithms", "feature/security-analysis"],
                     status: "active"
                 }
             ];
@@ -267,14 +267,14 @@ export async function getPapersList(): Promise<Paper[]> {
         const papers: Paper[] = await Promise.all(
             repositories.map(async (repo, index) => {
                 // Try to get branches for each repository
-                let branches: string[] = ["main"];
-                try {
-                    const branchData = await getRepositoryBranches(repo.name);
-                    branches = branchData.map(b => b.name);
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                } catch (error) {
-                    console.log(`Could not fetch branches for ${repo.name}`);
-                }
+                // let branches: string[] = ["main"];
+                // try {
+                //     // const branchData = await getRepositoryBranches(repo.name);
+                //     // branches = branchData.map(b => b.name);
+                // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                // } catch (error) {
+                //     console.log(`Could not fetch branches for ${repo.name}`);
+                // }
 
                 return {
                     id: (index + 1).toString(),
@@ -284,7 +284,7 @@ export async function getPapersList(): Promise<Paper[]> {
                     updatedAt: new Date(repo.updated_at).toLocaleDateString(),
                     description: repo.description || `Research paper repository: ${repo.name}`,
                     repository: repo.name,
-                    branches: branches,
+                    // branches: branches,
                     status: repo.private ? "private" : "public"
                 };
             })
@@ -307,8 +307,8 @@ export async function getPaperById(paperId: string): Promise<Paper | null> {
             try {
                 const repoInfo = await getRepositoryInfo(paper.repository);
                 if (repoInfo) {
-                    const branches = await getRepositoryBranches(paper.repository);
-                    paper.branches = branches.map(b => b.name);
+                    // const branches = await getRepositoryBranches(paper.repository);
+                    // paper.branches = branches.map(b => b.name);
                     paper.updatedAt = new Date(repoInfo.updated_at).toLocaleDateString();
                 }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
