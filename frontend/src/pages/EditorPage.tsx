@@ -105,10 +105,9 @@ export default function App() {
                         </CardContent>
                     </Card>
 
-
                 </div>
             </div>
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-white/20 shadow-lg shadow-purple-500/5 p-4">
+            <div className="">
                 <VoiceRecorder research_text={content} />
             </div>
         </LayoutWrapper>

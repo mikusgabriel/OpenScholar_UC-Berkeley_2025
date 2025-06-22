@@ -25,10 +25,7 @@ export default function Header() {
               </div>
               <div className="flex flex-col">
                 <h1 className="text-lg font-semibold text-gray-900 leading-tight">Research Editor</h1>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-gray-500 font-medium">Online</span>
-                </div>
+                
               </div>
             </div>
           </div>
