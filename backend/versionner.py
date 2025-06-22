@@ -39,7 +39,7 @@ Do not include any other text or explanations.
 branch is main by default.
 IF USER SAYS SOMETHING LIKE: I want to create a pull request for my research paper with description: test-repo  test-repo,THEN USE TOOL pull_chain
 YOUR username is testgyaccount
-YOUR REPO IS ml-healthcare-research
+YOUR REPO IS diffusion-tomography-research 
 
 If the user does not specify a branch, use main.
 make sure to pass all arguments to the functions you call.

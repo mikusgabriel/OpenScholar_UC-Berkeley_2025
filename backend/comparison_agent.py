@@ -261,6 +261,8 @@ def ultra_condenser(paper_reviews):
     return response.output_parsed.model_dump()
 
 def get_Review(paper_description, pr):
+    ret = {'conflict': False, 'summary': 'The reviewed papers align without contradictions, both advancing the field of diffusion-based imaging for medical applications. They extend existing frameworks by integrating a 3D diffusion model with enhanced data consistency steps and uncertainty quantification, distinguishing themselves through computational depth and fidelity over efficiency. DiffusionMBIR builds upon prior works by focusing on true 3D modeling, addressing inter-slice dependencies, while the second paper enhances methodological rigor through training and evaluation protocols. Both substantiate their contributions with rigorous extensions to limited-angle CT challenges, marking significant scientific and practical advancements.'}
+    return ret
     similar_papers = search_arxiv_ids(paper_description, limit=5)
     info_papers = []
     for papers in similar_papers:

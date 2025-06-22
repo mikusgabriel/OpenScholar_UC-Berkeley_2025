@@ -3,10 +3,9 @@
   "reviewer": {
     "reviewer": {
       "conflict": false,
-      "summary": "No data provided for processing.",
-      "relevant_score": 1
+      "summary": "The reviewed papers align without contradictions, both advancing the field of diffusion-based imaging for medical applications. They extend existing frameworks by integrating a 3D diffusion model with enhanced data consistency steps and uncertainty quantification, distinguishing themselves through computational depth and fidelity over efficiency. DiffusionMBIR builds upon prior works by focusing on true 3D modeling, addressing inter-slice dependencies, while the second paper enhances methodological rigor through training and evaluation protocols. Both substantiate their contributions with rigorous extensions to limited-angle CT challenges, marking significant scientific and practical advancements."
     }
   },
   "versionner": "",
-  "transferrer": "fetch127a0z5kv4kdc7plvxk635gzzjhkq3vzt5m5jks"
+  "transferrer": "fetch16prvl5u5wuvwnr9yy3wpkxd68ppxj30w8249hq"
 }

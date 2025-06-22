@@ -8,7 +8,7 @@ load_dotenv()
 USERNAME = "testgyaccount"
 TOKEN = os.getenv("GITHUB_API_TOKEN")
 GITHUB_API_URL = "https://api.github.com"
-repo = "ml-healthcare-research"
+repo = "diffusion-tomography-research"
 headers = {
     'Authorization': f'token {TOKEN}',
     'Accept': 'application/vnd.github+json'
