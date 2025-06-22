@@ -334,7 +334,7 @@ tools = [
             "properties": {},
             "required": []
         }
-    }
+    },
     {
         "type": "function",
         "name": "close",
@@ -343,6 +343,7 @@ tools = [
             "type": "object",
             "properties": {},
             "required": []
+        }
     }
 ]
 

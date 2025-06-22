@@ -2,14 +2,8 @@ import { useState } from "react"
 import LayoutWrapper from "@/components/layout-wrapper"
 import {
   ShoppingBag,
-  Zap,
   Search,
   Clock,
-  Monitor,
-  Leaf,
-  FlaskRoundIcon as Flask,
-  Calculator,
-  Cog,
   Users,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -19,66 +13,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function MarketplacePage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set())
 
-  const categories = [
-    { id: "all", title: "All Research Areas", count: 157 },
-    {
-      id: "health",
-      title: "Health & Medicine",
-      color: "from-red-500 to-pink-600",
-      count: 28,
-    },
-    {
-      id: "physics",
-      title: "Physics",
-      icon: Zap,
-      color: "from-blue-500 to-indigo-600",
-      count: 22,
-    },
-    {
-      id: "computer-science",
-      title: "Computer Science",
-      icon: Monitor,
-      color: "from-green-500 to-emerald-600",
-      count: 36,
-    },
-    {
-      id: "ai-ml",
-      title: "AI & Machine Learning",
-      icon: Monitor,
-      color: "from-purple-500 to-pink-600",
-      count: 18,
-    },
-    {
-      id: "biology",
-      title: "Biology",
-      icon: Leaf,
-      color: "from-emerald-500 to-teal-600",
-      count: 19,
-    },
-    {
-      id: "chemistry",
-      title: "Chemistry",
-      icon: Flask,
-      color: "from-purple-500 to-violet-600",
-      count: 16,
-    },
-    {
-      id: "mathematics",
-      title: "Mathematics",
-      icon: Calculator,
-      color: "from-orange-500 to-amber-600",
-      count: 24,
-    },
-    {
-      id: "engineering",
-      title: "Engineering",
-      icon: Cog,
-      color: "from-gray-500 to-slate-600",
-      count: 12,
-    },
-  ]
+  const toggleCardExpansion = (cardId: string) => {
+    const newExpandedCards = new Set(expandedCards)
+    if (newExpandedCards.has(cardId)) {
+      newExpandedCards.delete(cardId)
+    } else {
+      newExpandedCards.add(cardId)
+    }
+    setExpandedCards(newExpandedCards)
+  }
 
   const marketplaceItems = [
     {
@@ -543,13 +488,10 @@ export default function MarketplacePage() {
     const matchesSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory
-    return matchesSearch && matchesCategory
+    return matchesSearch
   })
 
-  const featuredItems = filteredItems.filter((item) => item.featured && !item.metrics)
   const promisingItems = filteredItems.filter((item) => item.metrics)
-  const regularItems = filteredItems.filter((item) => !item.featured && !item.metrics)
 
   return (
     <LayoutWrapper>
@@ -583,110 +525,6 @@ export default function MarketplacePage() {
             </div>
           </div>
         </div>
-
-        {/* Categories */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl whitespace-nowrap transition-all duration-200 ${selectedCategory === category.id
-                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25"
-                : "bg-white/70 text-gray-700 hover:bg-white/90 border border-white/20"
-                }`}
-            >
-              {category.icon && <category.icon className="w-4 h-4" />}
-              <span className="font-medium">{category.title}</span>
-              <Badge variant="secondary" className="bg-white/20 text-current">
-                {category.count}
-              </Badge>
-            </button>
-          ))}
-        </div>
-
-        {/* Featured Items */}
-        {featuredItems.length > 0 && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Featured Research Proposals</h3>
-              <Button variant="ghost" className="text-purple-600 hover:text-purple-700">
-                View All Featured
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {featuredItems.map((item) => (
-                <Card
-                  key={item.id}
-                  className="bg-white/70 backdrop-blur-sm border-white/20 shadow-lg shadow-purple-500/5 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-200 group"
-                >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base group-hover:text-purple-700 transition-colors">
-                      {item.title}
-                    </CardTitle>
-                    <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>opened by {item.company}</span>
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1">
-                          <Users className="w-3 h-3" />
-                          <span>{item.contributors} contributors</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          <span>{item.lastUpdated}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {item.metrics && (
-                      <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg border border-purple-100">
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Opportunity Score:</span>
-                            <span className="font-semibold text-purple-700">{item.metrics.opportunityScore}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Growth Rate:</span>
-                            <span className="font-semibold text-green-700">{item.metrics.growthRate} papers/period</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Acceleration:</span>
-                            <span className="font-semibold text-blue-700">{item.metrics.acceleration} papers/period²</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Recent Papers:</span>
-                            <span className="font-semibold text-orange-700">{item.metrics.recentPapers}</span>
-                          </div>
-                          <div className="flex justify-between col-span-2">
-                            <span className="text-gray-600">Total Papers:</span>
-                            <span className="font-semibold text-gray-700">{item.metrics.totalPapers}</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-200/50">
-                      <Button
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-md transition-all duration-200 text-sm"
-                        size="sm"
-                      >
-                        Join Research
-                      </Button>
-                      <Button
-                        className="bg-gradient-to-r from-blue-600 to-green-600 text-white hover:shadow-md transition-all duration-200 text-sm"
-                        size="sm"
-                      >
-                        Invest
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Promising Items */}
         {promisingItems.length > 0 && (
@@ -751,18 +589,66 @@ export default function MarketplacePage() {
                       </div>
                     )}
 
+                    {/* Expanded Content */}
+                    {expandedCards.has(item.id) && (
+                      <div className="space-y-3 pt-3 border-t border-gray-200/50">
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-gray-900">Research Focus</h4>
+                          <p className="text-sm text-gray-600 leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-gray-900">Research Methodology</h4>
+                          <p className="text-sm text-gray-600">
+                            This research area employs advanced machine learning techniques and collaborative approaches.
+                            The methodology includes data analysis, model development, and validation processes.
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-gray-900">Expected Outcomes</h4>
+                          <ul className="text-sm text-gray-600 space-y-1">
+                            <li>• Development of novel AI/ML approaches</li>
+                            <li>• Publication of research findings</li>
+                            <li>• Potential for commercialization</li>
+                            <li>• Academic and industry impact</li>
+                          </ul>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-gray-900">Collaboration Opportunities</h4>
+                          <p className="text-sm text-gray-600">
+                            Open to researchers, developers, and industry professionals interested in advancing
+                            the state-of-the-art in artificial intelligence and machine learning.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex items-center justify-between pt-2 border-t border-gray-200/50">
+                      <div className="flex gap-2">
+                        <Button
+                          className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-md transition-all duration-200 text-sm"
+                          size="sm"
+                        >
+                          Join Research
+                        </Button>
+                        <Button
+                          className="bg-gradient-to-r from-blue-600 to-green-600 text-white hover:shadow-md transition-all duration-200 text-sm"
+                          size="sm"
+                        >
+                          Invest
+                        </Button>
+                      </div>
                       <Button
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-md transition-all duration-200 text-sm"
+                        variant="ghost"
                         size="sm"
+                        onClick={() => toggleCardExpansion(item.id)}
+                        className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
                       >
-                        Join Research
-                      </Button>
-                      <Button
-                        className="bg-gradient-to-r from-blue-600 to-green-600 text-white hover:shadow-md transition-all duration-200 text-sm"
-                        size="sm"
-                      >
-                        Invest
+                        {expandedCards.has(item.id) ? "Show Less" : "Show More"}
                       </Button>
                     </div>
                   </CardContent>
@@ -772,57 +658,13 @@ export default function MarketplacePage() {
           </div>
         )}
 
-        {/* All Items */}
-        <div className="flex-1 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">
-              {selectedCategory === "all"
-                ? "All Research Proposals"
-                : categories.find((c) => c.id === selectedCategory)?.title}
-              <span className="text-gray-500 font-normal ml-2">({filteredItems.length} proposals)</span>
-            </h3>
+        {promisingItems.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-4xl mb-4">🔍</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No research proposals found</h3>
+            <p className="text-gray-600">Try adjusting your search or filter criteria</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {regularItems.map((item) => (
-              <Card
-                key={item.id}
-                className="bg-white/70 backdrop-blur-sm border-white/20 shadow-lg shadow-purple-500/5 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-200 group"
-              >
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm group-hover:text-purple-700 transition-colors line-clamp-2">
-                    {item.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <Users className="w-3 h-3" />
-                      <span>{item.contributors} contributors</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <Button
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-md transition-all duration-200"
-                      size="sm"
-                    >
-                      Join Research
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {filteredItems.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No research proposals found</h3>
-              <p className="text-gray-600">Try adjusting your search or filter criteria</p>
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </LayoutWrapper>
   )
