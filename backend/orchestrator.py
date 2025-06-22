@@ -103,7 +103,7 @@ async def handle_post(ctx: Context, req: Orchestrator_Request) -> Orchestrator_R
 async def handle_post_transaction(ctx: Context, req: Transferer_Request) -> Transferer_Response:
     transferrer = "transferrer"
 
-    await ctx.send("", message=Exporter_Request(type=transferrer, content=req.content))
+    await ctx.send(agent_addresses[transferrer], message=Exporter_Request(type=transferrer, content=req.content))
     print(read_global_action_map(transferrer))
     return Orchestrator_Response(
         timestamp=int(time.time()),
