@@ -11,7 +11,7 @@ from git_functions import (
     create_new_branch,
     checkout_existing_branch,
     pull_branch_commit,
-    list_repository_files,
+    list_files,
     list_repository_branches,
     get_repository_info,
     list_repositories,
@@ -181,7 +181,7 @@ tools = [
     },
     {
         "type": "function",
-        "name": "list_repository_files",
+        "name": "list_files",
         "description": "List all files in a repository branch.",
         "parameters": {
             "type": "object",
@@ -300,6 +300,19 @@ tools = [
     },
     {
         "type": "function",
+        "name": "list_repositories",
+        "description": "LIST ALL REPOSITORIES IN THE USER'S ACCOUNT",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            },
+        }
+    }
+    {
+        "type": "function",
         "name": "pull_chain",
         "description": "CREATE A PULL REQUEST FOR A RESEARCH PAPER",
         "parameters": {
@@ -333,7 +346,7 @@ function_map = {
     "create_new_branch": create_new_branch,
     "checkout_existing_branch": checkout_existing_branch,
     "pull_branch_commit": pull_branch_commit,
-    "list_repository_files": list_repository_files,
+    "list_files": list_files,
     "list_pull_requests": list_pull_requests,
     "create_pull_request_func": create_pull_request_func,
     "update_pulupdate_pull_request_funcl_request": update_pull_request_func,

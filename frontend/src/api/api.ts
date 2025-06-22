@@ -140,7 +140,11 @@ export async function getRepositoriesList(): Promise<RepositoryInfo[]> {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 request: "list_repositories",
-                content: "list_repositories",
+                content: {
+                    "type": "versionner",
+                    "content": "list_repositories",
+                    "message": "List all repositories"
+                }
             }),
         });
 

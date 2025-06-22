@@ -116,7 +116,7 @@ def pull_branch_commit(repo, branch):
     commit_resp = requests.get(commit_url, headers=headers)
     return {"status_code": commit_resp.status_code, "data": commit_resp.json()}
 
-def list_repository_files(repo, branch="main"):
+def list_files(repo, branch="main"):
     url = f"{GITHUB_API_URL}/repos/{USERNAME}/{repo}/git/trees/{branch}?recursive=1"
     resp = requests.get(url, headers=headers)
     return {"status_code": resp.status_code, "data": resp.json()}
