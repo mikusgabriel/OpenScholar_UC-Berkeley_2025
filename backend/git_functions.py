@@ -8,7 +8,7 @@ load_dotenv()
 USERNAME = "testgyaccount"
 TOKEN = os.getenv("GITHUB_API_TOKEN")
 GITHUB_API_URL = "https://api.github.com"
-
+repo = "ml-healthcare-research"
 headers = {
     'Authorization': f'token {TOKEN}',
     'Accept': 'application/vnd.github+json'
@@ -27,6 +27,7 @@ def create_github_repo(name, description="", private=True):
 def commit_file_to_repo(repo, path, content, message, branch="main"):
     ref_url = f'{GITHUB_API_URL}/repos/{USERNAME}/{repo}/git/ref/heads/{branch}'
     ref_resp = requests.get(ref_url, headers=headers)
+    path = "research.md"
     ref_json = ref_resp.json()
 
     if ref_resp.status_code == 409 and ref_json.get('message') == 'Git Repository is empty.':
@@ -179,7 +180,7 @@ def list_repositories():
     resp = requests.get(url, headers=headers)
     return {"status_code": resp.status_code, "data": resp.json()}
 
-def close(repo, pull_number):
+def close():
     # get latest PR 
     url = f"{GITHUB_API_URL}/repos/{USERNAME}/{repo}/pulls"
     resp = requests.get(url, headers=headers)
@@ -191,11 +192,11 @@ def close(repo, pull_number):
     return {"status_code": resp.status_code, "data": resp.json()}
 
 def pull_chain():
-    print(create_new_branch("test-repo", "mybranch"))
-    print(checkout_existing_branch("test-repo", "mybranch"))
-    print(commit_file_to_repo("test-repo", "changes.txt", "changes ", "changes ", "mybranch"))
-    a = create_pull_request_func("test-repo", "test", "mybranch", "main", "test")
-    return {"status_code": resp.status_code, "data": a.json()}  
+    print(create_new_branch(repo, "mybranch2"))
+    print(checkout_existing_branch(repo, "mybranch2"))
+    print(commit_file_to_repo(repo, "changes.txt", "jfasdflasdjfasdflhajsdfasldfha ", "changes ", "mybranch2"))
+    a = create_pull_request_func(repo, "test", "mybranch2", "main", "test")
+    return {"status_code": 200, "data": {"message": "success"}}  
 
 import logging
 import os
@@ -314,5 +315,3 @@ def get_blame_hashmap(repo, branch, file):
             hashmap[user] = round((hashmap[user] / total_lines) * 100, 2)
             
         return hashmap
-
-print(get_blame_hashmap("test-repo", "main", "research.md"))

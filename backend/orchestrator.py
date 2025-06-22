@@ -10,7 +10,7 @@ from git_functions import get_blame_hashmap
 
 load_dotenv()
 
-agent_addresses = {"exporter": "agent1q053knjgqywahnys5vj4k0w967xxaay7rn7nmmvvxpjlxzdxht8xzemvcyy","bank":"agent1qvsyu94yd2efs3ya0yand5cdeef99gjvu8xfg6z7xjjf9pd4fh8m2hh27uc",
+agent_addresses = {"exporter": "agent1q053knjgqywahnys5vj4k0w967xxaay7rn7nmmvvxpjlxzdxht8xzemvcyy","bank":"agent1qvsyu94yd2efs3ya0yand5cdeef99gjvu8xfg6z7xjjf9pd4fh8m2hh27uc","reviewer":"agent1qdznd0yqwaga24k797nktv78kmeqx02rs6n2spz5vgcsvhmpju0kjnr4mmx",
                    "versionner": "agent1q0p929thm82psch2u6xpux4rtvqnxkpt7sd7p4awue3h470lm9sdqm5qyth", "orchestrator": " agent1qtkzseh60dl6pjjlx2ysg49pwfmyj4sjyluaukw4mazv8jfekcyrvyyghsk", "transferrer": "agent1qvsyu94yd2efs3ya0yand5cdeef99gjvu8xfg6z7xjjf9pd4fh8m2hh27uc"}
 
 orchestrator = Agent(name="orchestrator", seed="orchestrator", mailbox=True)
@@ -24,6 +24,41 @@ PROMPT_TEMPLATE = "Treat my query as a choice you should only give me a word as 
 tools = [
     {
         "type": "function",
+        "name": "versionner",
+        "description": "Control any of the github functions the user would like to use.",
+        "function": {
+          # "name": "versionner",
+            "description": "Control any of the github functions the user would like to use.",
+            "parameters": {}
+        }
+    },
+    {
+        "type": "function",
+        "name": "reviewer",
+        "description": "Send your research paper so it can get reviewed by AI Reviewers.",
+        "function": {
+            #"name": "reviewer",
+            "description": "Send your research paper so it can get reviewed by AI Reviewers.",
+            "parameters": {}
+        }
+    },
+    {
+        "type": "function",
+        "name": "exporter",
+        "description": "Export the wanted markdown text research paper to latex",
+            "function": {
+           # "name": "exporter",
+            "description": "Export the wanted markdown text research paper to latex",
+            "parameters": {}
+        }
+    }
+]
+
+asi_tools = [
+    {
+        "type": "function",
+        "name": "versionner",
+        "description": "Control any of the github functions the user would like to use.",
         "function": {
             "name": "versionner",
             "description": "Control any of the github functions the user would like to use.",
@@ -32,6 +67,8 @@ tools = [
     },
     {
         "type": "function",
+        "name": "reviewer",
+        "description": "Send your research paper so it can get reviewed by AI Reviewers.",
         "function": {
             "name": "reviewer",
             "description": "Send your research paper so it can get reviewed by AI Reviewers.",
@@ -40,6 +77,8 @@ tools = [
     },
     {
         "type": "function",
+        "name": "exporter",
+        "description": "Export the wanted markdown text research paper to latex",
             "function": {
             "name": "exporter",
             "description": "Export the wanted markdown text research paper to latex",
@@ -62,6 +101,7 @@ def query_openai_chat(query: str) -> str:
         ],
         tools=tools,
     )
+    print(chat_completion.output[0].name)
     return chat_completion.output[0].name
 
 import requests
@@ -79,7 +119,7 @@ def query_asi(query: str) -> str:
                 "content": f"{query}"
             }
         ],
-        "tools": tools,
+        "tools": asi_tools,
         "temperature": 0,
         "stream": False,
         "max_tokens": 0
@@ -96,22 +136,20 @@ import re
 
 @orchestrator.on_rest_post("/rest/post", Orchestrator_Request, Orchestrator_Response)
 async def handle_post(ctx: Context, req: Orchestrator_Request) -> Orchestrator_Response:
-    #result = query_openai_chat(req.request)
-    #print(result)
-    re_asi = query_asi(req.request)
-    reg_asi = re_asi["choices"][0]["message"]["content"]
-    print(reg_asi)
-    # regex to check if the response is a word
-    if re.match(r"^[a-zA-Z]+$", reg_asi):
-        result = reg_asi
+    print(req.request)
+    if req.request == "" or req.request == None:
+        #reg_asi = query_asi(str(req.type))
+        reg_asi = query_openai_chat(str(req.type))
     else:
-        return Orchestrator_Response(
-            timestamp=int(time.time()),
-            type="error",
-            content={Error_Response(
-                error="Invalid request type. Please use 'exporter', 'versionner', or 'reviewer'.")},
-            agent_address=ctx.agent.address
-        )
+        #reg_asi = query_asi(str(req.request))
+        reg_asi = query_openai_chat(str(req.request))
+    print(reg_asi)
+    #re_asi = query_asi(req.request)
+    #print(re_asi)
+    #reg_asi = reg_asi["choices"][0]["message"]["content"]
+    result = reg_asi
+    #print(reg_asi)
+    # regex to check if the response is a wor
     if (result == "exporter"):
         print(req.content, agent_addresses[result])
         await ctx.send(agent_addresses[result], message=Exporter_Request(type=result, content=req.content))

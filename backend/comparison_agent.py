@@ -3,7 +3,7 @@ import os
 import tarfile
 import shutil
 from globals import write_global_action_map, read_global_action_map
-from schema import Reviewer_Request, Versionner_Request
+from schema import Reviewer_Request, Versionner_Request, Transferer_Request
 from orchestrator import agent_addresses
 from pydantic import BaseModel
 from openai import OpenAI
@@ -11,10 +11,11 @@ import json
 from dotenv import load_dotenv
 from uagents import Agent
 from supabase import create_client, Client
+import asyncio
 
 load_dotenv()
 
-reviewer = Agent(name="reviewer", seed="reviewer", mailbox=True)
+reviewer = Agent(name="reviewer", seed="reviewer", port=8010,mailbox=True)
 
 
 def search_arxiv_ids(query, limit=5):
@@ -301,25 +302,44 @@ def get_Review(paper_description, pr):
     return pr
 
 supabase: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
-
+import asyncio
 @reviewer.on_message(model=Reviewer_Request)
 async def handle_review_request(ctx, sender: str, msg: Reviewer_Request):
-    ctx.logger.info(f"Review request for paper: {msg.paper_description}")
-    result = get_Review(msg.paper_description, msg.pr)
+    ctx.logger.info(f"Review request for paper: {msg}")
+    result = get_Review(msg.content["paper_description"], msg.content["pr"])
     ctx.logger.info(f"Review result: {result}")
-    write_global_action_map({"reviewer": result})
+    write_global_action_map("reviewer",{"reviewer": result})
     if result["conflict"] != True:
-        ctx.send(agent_addresses["versionner"], message=Versionner_Request(type="close", content={"message": "PR CLOSE", "content":"please close the PR", "type":"close"}))
+        await ctx.send(agent_addresses["versionner"], message=Versionner_Request(type="versionner", content={"message": "PR CLOSE", "content":"please close the PR", "type":"close"}))
 
-        ctx.send(agent_addresses["transferrer"], message=Transferrer_Request(type="generate_wallet", content={"message": "GENERATE WALLET", "content":"please generate a wallet", "type":"generate_wallet"}))
+        await ctx.send(agent_addresses["transferrer"], message=Transferer_Request(type="transferer", content={"message": "GENERATE WALLET", "content":"please generate a wallet", "type":"generate_wallet"}))
+        
+        # Add a delay to allow the transferrer agent to process
+        await asyncio.sleep(2)  # Wait 2 seconds
+        
         key = read_global_action_map("transferrer")
-
-        ctx.send(agent_addresses["transferrer"], message=Transferrer_Request(type="get_self_address", content={"message": "GET SELF ADDRESS", "content":key, "type":"get_self_address"}))
+        ctx.logger.info(f"Transferrer result: {key}")
+        
+        await ctx.send(agent_addresses["transferrer"], message=Transferer_Request(type="transferer", content={"hex_priv": key, "type":"get_address"}))
+        
+        # Add another delay
+        await asyncio.sleep(2)
+        
         public = read_global_action_map("transferrer")
+        ctx.logger.info(f"Transferrer result: {public}")
+        
+        # Add debugging to see what's being written to Supabase
         
         try:
             a = read_global_action_map("versionner")
-            name = a["user"]["name"]
+            ctx.logger.info(f"Versionner result: {a}")
+            # Check if the data has the expected structure
+            if a and isinstance(a, dict) and "user" in a and "name" in a["user"]:
+                name = a["user"]["name"]
+            else:
+                # Use a default name if the structure is not as expected
+                name = "default_user"
+                
             user_email = "name@random.com"
             user_query = supabase.schema("public").table("keys_stuff").select("*").eq("username", name).execute()
 
@@ -329,7 +349,8 @@ async def handle_review_request(ctx, sender: str, msg: Reviewer_Request):
                     "public": public,
                     "private": key
                 }
-                supabase.schema("public").table("keys_stuff").insert(user_data).execute()
+                ctx.logger.info(f"Inserting user data: {user_data}")
+                supabase.schema("public").table("keys_stuff").upsert(user_data).execute()
                 
         except Exception as e:
             ctx.logger.error(f"Error creating user in Supabase: {e}")

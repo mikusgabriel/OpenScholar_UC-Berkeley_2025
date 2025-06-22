@@ -1,9 +1,10 @@
 from openai import OpenAI
 from uagents import Agent
-from schema import Versionner_Request, Branch_Request
+from schema import Reviewer_Request, Versionner_Request, Branch_Request
 import dotenv
 import os
 import json
+from orchestrator import agent_addresses
 from git_functions import (
     create_github_repo,
     commit_file_to_repo,
@@ -38,6 +39,7 @@ Do not include any other text or explanations.
 branch is main by default.
 IF USER SAYS SOMETHING LIKE: I want to create a pull request for my research paper with description: test-repo  test-repo,THEN USE TOOL pull_chain
 YOUR username is testgyaccount
+YOUR REPO IS ml-healthcare-research
 
 If the user does not specify a branch, use main.
 make sure to pass all arguments to the functions you call.
@@ -384,23 +386,34 @@ function_map = {
 
 @versionner.on_message(model=Versionner_Request)
 async def handle_review(ctx, sender: str, msg: Versionner_Request):
-    ctx.logger.info(msg.content["type"] + " " + msg.content["content"] + " " + msg.content["message"])
-    result = query_openai_chat(msg.content["type"] + " File Content:" + msg.content["content"] + " " + msg.content["message"])
+    result = ""
+    if msg.content != "":
+        ctx.logger.info(msg.content["type"] + " " + msg.content["content"] + " " + msg.content["message"])
+        result = query_openai_chat( msg.content["content"] + " " + msg.content["message"] + msg.content["type"] )
+    else:
+        ctx.logger.info(str(msg))
+        result = query_openai_chat(msg)
+    #result = query_openai_chat(msg.content["type"] + " File Content:" + msg.content["content"] + " " + msg.content["message"])
     ctx.logger.info(result)
     function_name = result[0].name
     arguments = json.loads(result[0].arguments)
     ctx.logger.info(function_name)
-
+    
     if function_name in function_map:
         ctx.logger.info(
+
             f"Calling function: {function_name} with arguments: {arguments}")
-        result = function_map[function_name](**arguments)
-        ctx.logger.info(f"Function result: {result}")
-        write_global_action_map("versionner", result)
-    else:
-        ctx.logger.error(
-            f"Function {function_name} not found in function_map.")
-        write_global_action_map("versionner", {"error": "Function not found"})
+        result_pr = ""
+        if function_name == "pull_chain":
+            reviewer_address = agent_addresses["reviewer"]
+            await ctx.send(reviewer_address, message=Reviewer_Request(type="reviewer", content={"paper_description": "This is a PR for " + json.dumps(msg.content) + " at:" + str(arguments), "pr": "id"}))    
+
+            result_pr = read_global_action_map("reviewer")
+            if result_pr:
+                result = function_map[function_name](**arguments)
+    result = function_map[function_name](**arguments)
+
+    write_global_action_map("versionner", result_pr)
 
 if __name__ == "__main__":
     versionner.run()

@@ -91,34 +91,50 @@ async def handle_review(ctx: Context, sender: str, msg: Transferer_Request):
     ctx.logger.info(
         "Received POST request with content: %s", msg.content)
     result = None
-    if msg.content.type == "add_token":
-        result = add_token(msg.content.hex_priv, msg.content.amount)
+    
+    # Check if content is a dict and has a type key
+    if isinstance(msg.content, dict) and "type" in msg.content:
+        content_type = msg.content["type"]
+    else:
+        ctx.logger.warning("Invalid content format: %s", msg.content)
+        return
+    
+    if content_type == "add_token":
+        result = add_token(msg.content["hex_priv"], msg.content["amount"])
         ctx.logger.info("Token added to BANK_ADDRESS: %s", result)
 
-    elif msg.content.type == "send_token":
+    elif content_type == "send_token":
         result = send_token(
-            msg.content.amount,
-            msg.content.hex_priv,
-            msg.content.to_address,
+            msg.content["amount"],
+            msg.content["hex_priv"],
+            msg.content["to_address"],
         )
         ctx.logger.info("Token sent to user address: %s", result)
 
-    elif msg.content.type == "view_amount":
-        result = view_amount(msg.content.hex_priv)
+    elif content_type == "view_amount":
+        result = view_amount(msg.content["hex_priv"])
         ctx.logger.info("Wallet balance: %s", result)
 
-    elif msg.content.type == "get_address":
-        result = get_self_address(msg.content.hex_priv)
+    elif content_type == "get_address":
+        # The hex_priv is in the "hex_priv" field
+        hex_priv = msg.content.get("hex_priv")
+        if hex_priv:
+            address_obj = get_self_address(hex_priv)
+            # Convert Address object to string for JSON serialization
+            result = str(address_obj)
+        else:
+            ctx.logger.error("No hex_priv found in message content")
+            return
         ctx.logger.info("Derived wallet address: %s", result)
 
-    elif msg.content.type == "generate_wallet":
+    elif content_type == "generate_wallet":
         result = generate_wallet_key()
         ctx.logger.info("Generated wallet key: %s", result)
 
     else:
-        ctx.logger.warning("Unknown message type: %s", msg.content.type)
+        ctx.logger.warning("Unknown message type: %s", content_type)
 
-    write_global_action_map({"transferrer": result})
+    write_global_action_map("transferrer", result)
 
 if __name__ == "__main__":
     transferrer.run()
