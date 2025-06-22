@@ -3,17 +3,13 @@ create table "public"."keys_stuff" (
     "created_at" timestamp with time zone not null default now(),
     "public" text,
     "private" text,
-    "user" uuid
+    "username" text
 );
 
 
 CREATE UNIQUE INDEX keys_stuff_pkey ON public.keys_stuff USING btree (id);
 
 alter table "public"."keys_stuff" add constraint "keys_stuff_pkey" PRIMARY KEY using index "keys_stuff_pkey";
-
-alter table "public"."keys_stuff" add constraint "keys_stuff_user_fkey" FOREIGN KEY ("user") REFERENCES auth.users(id) not valid;
-
-alter table "public"."keys_stuff" validate constraint "keys_stuff_user_fkey";
 
 grant delete on table "public"."keys_stuff" to "anon";
 

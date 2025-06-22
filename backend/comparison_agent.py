@@ -2,13 +2,19 @@ import requests
 import os
 import tarfile
 import shutil
+from globals import write_global_action_map, read_global_action_map
+from schema import Reviewer_Request, Versionner_Request
+from orchestrator import agent_addresses
 from pydantic import BaseModel
 from openai import OpenAI
 import json
 from dotenv import load_dotenv
+from uagents import Agent
+from supabase import create_client, Client
 
 load_dotenv()
 
+reviewer = Agent(name="reviewer", seed="reviewer", mailbox=True)
 
 
 def search_arxiv_ids(query, limit=5):
@@ -293,3 +299,42 @@ def get_Review(paper_description, pr):
     pr = ultra_condenser(per_paper_pr)
 
     return pr
+
+supabase: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+
+@reviewer.on_message(model=Reviewer_Request)
+async def handle_review_request(ctx, sender: str, msg: Reviewer_Request):
+    ctx.logger.info(f"Review request for paper: {msg.paper_description}")
+    result = get_Review(msg.paper_description, msg.pr)
+    ctx.logger.info(f"Review result: {result}")
+    write_global_action_map({"reviewer": result})
+    if result["conflict"] != True:
+        ctx.send(agent_addresses["versionner"], message=Versionner_Request(type="close", content={"message": "PR CLOSE", "content":"please close the PR", "type":"close"}))
+
+        ctx.send(agent_addresses["transferrer"], message=Transferrer_Request(type="generate_wallet", content={"message": "GENERATE WALLET", "content":"please generate a wallet", "type":"generate_wallet"}))
+        key = read_global_action_map("transferrer")
+
+        ctx.send(agent_addresses["transferrer"], message=Transferrer_Request(type="get_self_address", content={"message": "GET SELF ADDRESS", "content":key, "type":"get_self_address"}))
+        public = read_global_action_map("transferrer")
+        
+        try:
+            a = read_global_action_map("versionner")
+            name = a["user"]["name"]
+            user_email = "name@random.com"
+            user_query = supabase.schema("public").table("keys_stuff").select("*").eq("username", name).execute()
+
+            if not user_query.data:
+                user_data = {
+                    "username": name,
+                    "public": public,
+                    "private": key
+                }
+                supabase.schema("public").table("keys_stuff").insert(user_data).execute()
+                
+        except Exception as e:
+            ctx.logger.error(f"Error creating user in Supabase: {e}")
+        
+        return
+
+if __name__ == "__main__":
+    reviewer.run()

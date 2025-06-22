@@ -8,7 +8,7 @@ from schema import Transferer_Response, Transferer_Request
 from globals import write_global_action_map
 
 transferrer = Agent(name="transferrer", seed="transferrer",
-                    port=8004, endpoint="http://localhost:8004/submit")
+                    port=8004, endpoint="http://localhost:8004/submit", mailbox=True)
 
 # Default network: Fetch.ai Dorado testnet
 DEFAULT_NETWORK = NetworkConfig.fetchai_dorado_testnet()

@@ -97,7 +97,12 @@ export async function getRepositoryBranches(repositoryName: string): Promise<Rep
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                repository_name: repositoryName,
+                request: "Get the branches of the repository " + repositoryName,
+                content: {
+                    "type": "versionner",
+                    "content": "get_repository_branches",
+                    "message": "Get the branches of the repository " + repositoryName,
+                }
             }),
         });
 
@@ -114,12 +119,20 @@ export async function getRepositoryBranches(repositoryName: string): Promise<Rep
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function getRepositoryInfo(repositoryName: string): Promise<RepositoryInfo | null> {
+export async function getRepositoryFiles(repositoryName: string): Promise<RepositoryInfo | null> {
     try {
+        console.log("Repository Name: " + repositoryName);
         const response = await fetch("http://localhost:8000/rest/post", {
-            method: "GET",
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-
+            body: JSON.stringify({
+                request: "List Files of repo: " + repositoryName,
+                content: {
+                    "type": "versionner",
+                    "content": "list_files",
+                    "message": "List Files of repo: " + repositoryName
+                }
+            }),
         });
 
         if (!response.ok) {
@@ -127,6 +140,7 @@ export async function getRepositoryInfo(repositoryName: string): Promise<Reposit
         }
 
         const data = await response.json();
+        console.log(data);
         return data.data || null;
     } catch (error) {
         console.error("Error fetching repository info:", error);
@@ -149,12 +163,18 @@ export async function getRepositoriesList(): Promise<RepositoryInfo[]> {
             }),
         });
 
+        console.log(response);
         if (!response.ok) {
             throw new Error("Failed to fetch repositories list");
         }
 
+
         const data = await response.json();
-        return data.data || [];
+        console.log(data);
+        const files = await getRepositoryFiles(data.content.content.data[0].name);
+        console.log(files);
+
+        return data.content.content.data || [];
     } catch (error) {
         console.error("Error fetching repositories list:", error);
         return [];
@@ -219,7 +239,7 @@ export interface Paper {
     updatedAt: string;
     description: string;
     repository: string;
-    branches: string[];
+    // branches: string[];
     status: string;
 }
 
@@ -239,7 +259,7 @@ export async function getPapersList(): Promise<Paper[]> {
                     updatedAt: "2024-01-20",
                     description: "A comprehensive study on the implementation of ML algorithms in medical diagnosis.",
                     repository: "ml-healthcare-research",
-                    branches: ["main", "feature/data-analysis", "feature/validation"],
+                    // branches: ["main", "feature/data-analysis", "feature/validation"],
                     status: "active"
                 },
                 {
@@ -250,7 +270,7 @@ export async function getPapersList(): Promise<Paper[]> {
                     updatedAt: "2024-01-18",
                     description: "Exploring the impact of quantum computing on current cryptographic methods.",
                     repository: "quantum-crypto-study",
-                    branches: ["main", "feature/quantum-algorithms", "feature/security-analysis"],
+                    // branches: ["main", "feature/quantum-algorithms", "feature/security-analysis"],
                     status: "active"
                 }
             ];
@@ -261,14 +281,14 @@ export async function getPapersList(): Promise<Paper[]> {
         const papers: Paper[] = await Promise.all(
             repositories.map(async (repo, index) => {
                 // Try to get branches for each repository
-                let branches: string[] = ["main"];
-                try {
-                    const branchData = await getRepositoryBranches(repo.name);
-                    branches = branchData.map(b => b.name);
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                } catch (error) {
-                    console.log(`Could not fetch branches for ${repo.name}`);
-                }
+                // let branches: string[] = ["main"];
+                // try {
+                //     // const branchData = await getRepositoryBranches(repo.name);
+                //     // branches = branchData.map(b => b.name);
+                // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                // } catch (error) {
+                //     console.log(`Could not fetch branches for ${repo.name}`);
+                // }
 
                 return {
                     id: (index + 1).toString(),
@@ -278,7 +298,7 @@ export async function getPapersList(): Promise<Paper[]> {
                     updatedAt: new Date(repo.updated_at).toLocaleDateString(),
                     description: repo.description || `Research paper repository: ${repo.name}`,
                     repository: repo.name,
-                    branches: branches,
+                    // branches: branches,
                     status: repo.private ? "private" : "public"
                 };
             })
@@ -288,32 +308,5 @@ export async function getPapersList(): Promise<Paper[]> {
     } catch (error) {
         console.error("Error fetching papers list:", error);
         return [];
-    }
-}
-
-export async function getPaperById(paperId: string): Promise<Paper | null> {
-    try {
-        const papers = await getPapersList();
-        const paper = papers.find(p => p.id === paperId);
-
-        if (paper) {
-            // Try to get additional repository info
-            try {
-                const repoInfo = await getRepositoryInfo(paper.repository);
-                if (repoInfo) {
-                    const branches = await getRepositoryBranches(paper.repository);
-                    paper.branches = branches.map(b => b.name);
-                    paper.updatedAt = new Date(repoInfo.updated_at).toLocaleDateString();
-                }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            } catch (error) {
-                console.log("Using existing paper data");
-            }
-        }
-
-        return paper || null;
-    } catch (error) {
-        console.error("Error fetching paper by ID:", error);
-        return null;
     }
 }

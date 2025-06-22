@@ -12,7 +12,7 @@ from git_functions import (
     checkout_existing_branch,
     pull_branch_commit,
     list_files,
-    list_repository_branches,
+    list_branches,
     get_repository_info,
     list_repositories,
     list_pull_requests,
@@ -21,6 +21,7 @@ from git_functions import (
     fork_repository,
     merge_pull_request_func,
     pull_chain,
+    close,
 )
 from globals import write_global_action_map, read_global_action_map
 
@@ -28,7 +29,7 @@ dotenv.load_dotenv()
 
 
 versionner = Agent("versionner", seed="versionner", port=8001,
-                   endpoint="http://localhost:8001/submit")
+                   endpoint="http://localhost:8001/submit", mailbox=True)
 
 CHAT_MODEL = "gpt-4.1-nano"
 PROMPT_TEMPLATE = """
@@ -48,6 +49,7 @@ You can use the following functions:
     "checkout_branch"
     "pull"
     "list_files"
+    "close"
     "list_pull_requests"
     "update_pull_request"
     "fork_repo"
@@ -300,17 +302,29 @@ tools = [
     },
     {
         "type": "function",
+        "name": "list_branches",
+        "description": "LIST ALL BRANCHES IN THE REPOSITORY",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            "repo": {
+                "type": "string",
+                "description": "Repository name."
+            }
+            },
+            "required": ["repo"]
+        }
+    },
+    {
+        "type": "function",
         "name": "list_repositories",
         "description": "LIST ALL REPOSITORIES IN THE USER'S ACCOUNT",
         "parameters": {
             "type": "object",
-            "properties": {
-                "type": "object",
-                "properties": {},
-                "required": []
-            },
+            "properties": {},
+            "required": []
         }
-    }
+    },
     {
         "type": "function",
         "name": "pull_chain",
@@ -320,6 +334,15 @@ tools = [
             "properties": {},
             "required": []
         }
+    }
+    {
+        "type": "function",
+        "name": "close",
+        "description": "CLOSE THE PULL REQUEST",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
     }
 ]
 
@@ -352,9 +375,10 @@ function_map = {
     "update_pulupdate_pull_request_funcl_request": update_pull_request_func,
     "fork_repository": fork_repository,
     "merge_pull_request_func": merge_pull_request_func,
-    "list_repository_branches": list_repository_branches,
+    "list_branches": list_branches,
     "list_repositories": list_repositories,
     "pull_chain": pull_chain,
+    "close": close,
 }
 
 @versionner.on_message(model=Versionner_Request)
