@@ -8,7 +8,7 @@ import json
 import pypandoc
 
 exporter = Agent("exporter", seed="exporter", port=8002,
-                 endpoint="http://localhost:8002/submit")
+                 endpoint="http://localhost:8002/submit", mailbox=True)
 
 
 def latex_to_pdf_blob(latex_string):

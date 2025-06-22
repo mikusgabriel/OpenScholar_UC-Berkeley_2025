@@ -4,6 +4,7 @@ import MarketPlacePage from "./pages/MarketplacePage";
 import AccountPage from "./pages/AccountPage";
 import PullRequestsPage from "./pages/PullRequestPage";
 import PapersPage from "./pages/PapersPage";
+import PaperDetailPage from "./pages/PaperDetailPage";
 
 function App() {
   return (
@@ -14,8 +15,8 @@ function App() {
         <Route path="/account" element={<AccountPage />} />
         <Route path='/pull-request' element={<PullRequestsPage />} />
         <Route path="/papers" element={<PapersPage />} />
-        <Route path="/papers/:id" element={<PapersPage />} />
-        <Route path="/papers/:id/editor" element={<EditorPage />} />
+        <Route path="/papers/:id" element={<PaperDetailPage />} />
+        <Route path="/papers/:id/edit" element={<EditorPage />} />
       </Routes>
     </Router>
   );
