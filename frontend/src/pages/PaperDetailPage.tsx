@@ -3,7 +3,6 @@ import LayoutWrapper from "@/components/layout-wrapper";
 import { FileText, Calendar, User, GitBranch, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { getPaperById } from "@/api/api";
 import type { Paper } from "@/api/api";
 
 interface LocationState {
