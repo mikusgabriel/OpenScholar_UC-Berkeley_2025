@@ -6,6 +6,7 @@ from schema import Transferer_Request, Transferer_Response, Orchestrator_Respons
 import json
 from globals import read_global_action_map
 from dotenv import load_dotenv
+from git_functions import get_blame_hashmap
 
 load_dotenv()
 
