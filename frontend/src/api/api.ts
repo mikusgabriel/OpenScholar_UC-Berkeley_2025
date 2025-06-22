@@ -22,12 +22,9 @@ export async function RequestExport(content: string) {
             // If you define more specific props later
             console.log("Exporter response:", data.content.content);
         } else if (data.type === "exporter") {
-            const exportContent = data.content as ExporterResponse;
-            if (exportContent) {
-                const prout = arrayBufferToBase64(exportContent.content);
-                downloadBase64PDF(prout, "converted.pdf");
-            }
-            console.log("Exported content:", exportContent.content);
+            // Handle both cases where content might be direct Base64 or nested
+            const pdfData = JSON.parse(data.content.content);
+            downloadBase64PDF(pdfData.content, "exported.pdf");
         } else if (data.type === "reviewer") {
             const reviewContent = data.content as ReviewerResponse;
             console.log("Review comments:", reviewContent.content);
@@ -73,21 +70,19 @@ interface OrchestratorResponse {
     agent_address: string;
 }
 
-function arrayBufferToBase64(buffer) {
-    let binary = "";
-    const bytes = new Uint8Array(buffer);
-    for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binary);
-}
-
+// Improved download function
 export function downloadBase64PDF(base64String: string, fileName: string) {
-    const link = document.createElement("a");
-    link.href = `data:application/pdf;base64,${base64String}`;
-    link.download = fileName;
+    const byteCharacters = atob(base64String);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
 
-    document.body.appendChild(link);
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
     link.click();
-    document.body.removeChild(link);
+    window.URL.revokeObjectURL(link.href);
 }

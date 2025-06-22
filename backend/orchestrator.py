@@ -64,8 +64,8 @@ async def handle_post(ctx: Context, req: Orchestrator_Request) -> Orchestrator_R
         return Orchestrator_Response(
             timestamp=int(time.time()),
             type=result,
-            content=Exporter_Response(type="exporter", content=json.dumps(
-                read_global_action_map(result))),
+            content=Exporter_Response(
+                type="exporter", content=read_global_action_map(result)),
             agent_address=ctx.agent.address
         )
     elif (result == "versionner"):
@@ -74,8 +74,8 @@ async def handle_post(ctx: Context, req: Orchestrator_Request) -> Orchestrator_R
         return Orchestrator_Response(
             timestamp=int(time.time()),
             type=result,
-            content=Versionner_Response(type="versionner", content=json.dumps(
-                read_global_action_map(result))),
+            content=Versionner_Response(
+                type="versionner", content=read_global_action_map(result)),
             agent_address=ctx.agent.address
         )
 
@@ -86,9 +86,7 @@ async def handle_post(ctx: Context, req: Orchestrator_Request) -> Orchestrator_R
             timestamp=int(time.time()),
             type=result,
             content=Reviewer_Response(type="reviewer",
-                                      content=json.dumps(
-                                          read_global_action_map(result))
-                                      ),
+                                      content=read_global_action_map(result)),
             agent_address=ctx.agent.address
         )
 
@@ -100,5 +98,7 @@ async def handle_post(ctx: Context, req: Orchestrator_Request) -> Orchestrator_R
         agent_address=ctx.agent.address
     )
 
+
+@orchestrator.on_rest_post("/rest/transaction", Transaction_Request, Transaction_Response)
 if __name__ == "__main__":
     orchestrator.run()
