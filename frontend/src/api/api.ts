@@ -93,7 +93,7 @@ interface RepositoryInfo {
 // API functions for repository operations
 export async function getRepositoryBranches(repositoryName: string): Promise<RepositoryBranch[]> {
     try {
-        const response = await fetch("http://localhost:8001/submit", {
+        const response = await fetch("http://localhost:8000/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -115,12 +115,10 @@ export async function getRepositoryBranches(repositoryName: string): Promise<Rep
 
 export async function getRepositoryInfo(repositoryName: string): Promise<RepositoryInfo | null> {
     try {
-        const response = await fetch("http://localhost:8001/submit", {
-            method: "POST",
+        const response = await fetch("http://localhost:8000/submit", {
+            method: "GET",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                repository_name: repositoryName,
-            }),
+
         });
 
         if (!response.ok) {
@@ -136,11 +134,16 @@ export async function getRepositoryInfo(repositoryName: string): Promise<Reposit
 }
 
 export async function getRepositoriesList(): Promise<RepositoryInfo[]> {
+    const request = {
+        request: "list_repositories",
+        content: "list_repositories",
+    }
+
     try {
-        const response = await fetch("http://localhost:8001/submit", {
+        const response = await fetch("http://localhost:8000/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({}),
+            body: JSON.stringify(request),
         });
 
         if (!response.ok) {
