@@ -304,13 +304,10 @@ tools = [
         "description": "LIST ALL REPOSITORIES IN THE USER'S ACCOUNT",
         "parameters": {
             "type": "object",
-            "properties": {
-                "type": "object",
-                "properties": {},
-                "required": []
-            },
+            "properties": {},
+            "required": []
         }
-    }
+    },
     {
         "type": "function",
         "name": "pull_chain",
