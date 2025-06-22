@@ -12,27 +12,38 @@ load_dotenv()
 agent_addresses = {"exporter": "agent1q053knjgqywahnys5vj4k0w967xxaay7rn7nmmvvxpjlxzdxht8xzemvcyy",
                    "versionner": "agent1q0p929thm82psch2u6xpux4rtvqnxkpt7sd7p4awue3h470lm9sdqm5qyth", "orchestrator": " agent1qtkzseh60dl6pjjlx2ysg49pwfmyj4sjyluaukw4mazv8jfekcyrvyyghsk", "transferrer": "agent1qvsyu94yd2efs3ya0yand5cdeef99gjvu8xfg6z7xjjf9pd4fh8m2hh27uc"}
 
-orchestrator = Agent(name="orchestrator", seed="orchestrator", port=8000,
-                     endpoint=["http://localhost:8000/submit"])
+orchestrator = Agent(name="orchestrator", seed="orchestrator", mailbox=True)
+
+print(f"Your agent's address is: {orchestrator.address}")
+
 
 CHAT_MODEL = "gpt-4.1-nano"
-PROMPT_TEMPLATE = "You are a good boy"
+PROMPT_TEMPLATE = "Treat my query as a choice you should only give me a word as response no more like classify if my query is in relationship with github return versionner or if i need review give me reviewer or if i need to export give me exporter NO capital letters exactly these words."
 
 tools = [
     {
         "type": "function",
-        "name": "versionner",
-        "description": "Control any of the github functions the user would like to use.",
+        "function": {
+            "name": "versionner",
+            "description": "Control any of the github functions the user would like to use.",
+            "parameters": {}
+        }
     },
     {
         "type": "function",
-        "name": "reviewer",
-        "description": "Send your research paper so it can get reviewed by AI Reviewers.",
+        "function": {
+            "name": "reviewer",
+            "description": "Send your research paper so it can get reviewed by AI Reviewers.",
+            "parameters": {}
+        }
     },
     {
         "type": "function",
-        "name": "exporter",
-        "description": "Export the wanted markdown text research paper to latex",
+            "function": {
+            "name": "exporter",
+            "description": "Export the wanted markdown text research paper to latex",
+            "parameters": {}
+        }
     }
 ]
 
@@ -52,10 +63,54 @@ def query_openai_chat(query: str) -> str:
     )
     return chat_completion.output[0].name
 
+import requests
+def query_asi(query: str) -> str:
+    url = "https://api.asi1.ai/v1/chat/completions"
+    payload = json.dumps({
+        "model": "asi1-mini",
+        "messages": [
+            {
+                "role": "system",
+                "content": f"{PROMPT_TEMPLATE}"
+            },
+            {
+                "role": "user",
+                "content": f"{query}"
+            }
+        ],
+        "tools": tools,
+        "temperature": 0,
+        "stream": False,
+        "max_tokens": 0
+    })
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': f'Bearer {os.getenv("ASI_API_KEY")}'
+    }
+    response = requests.post(url, headers=headers, data=payload)
+    return response.json()
+
+import re
 
 @orchestrator.on_rest_post("/rest/post", Orchestrator_Request, Orchestrator_Response)
 async def handle_post(ctx: Context, req: Orchestrator_Request) -> Orchestrator_Response:
-    result = query_openai_chat(req.request)
+    #result = query_openai_chat(req.request)
+    #print(result)
+    re_asi = query_asi(req.request)
+    reg_asi = re_asi["choices"][0]["message"]["content"]
+    print(reg_asi)
+    # regex to check if the response is a word
+    if re.match(r"^[a-zA-Z]+$", reg_asi):
+        result = reg_asi
+    else:
+        return Orchestrator_Response(
+            timestamp=int(time.time()),
+            type="error",
+            content={Error_Response(
+                error="Invalid request type. Please use 'exporter', 'versionner', or 'reviewer'.")},
+            agent_address=ctx.agent.address
+        )
     if (result == "exporter"):
         print(req.content, agent_addresses[result])
         await ctx.send(agent_addresses[result], message=Exporter_Request(type=result, content=req.content))

@@ -2,12 +2,17 @@ import requests
 import os
 import tarfile
 import shutil
+from globals import write_global_action_map
+from schema import Reviewer_Request
 from pydantic import BaseModel
 from openai import OpenAI
 import json
 from dotenv import load_dotenv
+from uagents import Agent
 
 load_dotenv()
+
+reviewer = Agent(name="reviewer", seed="reviewer", mailbox=True)
 
 
 def search_arxiv_ids(query, limit=5):
@@ -292,3 +297,13 @@ def get_Review(paper_description, pr):
     pr = ultra_condenser(per_paper_pr)
 
     return pr
+
+@reviewer.on_message(model=Reviewer_Request)
+async def handle_review_request(ctx, sender: str, msg: Reviewer_Request):
+    ctx.logger.info(f"Review request for paper: {msg.paper_description}")
+    result = get_Review(msg.paper_description, msg.pr)
+    ctx.logger.info(f"Review result: {result}")
+    write_global_action_map("reviewer", result)
+
+if __name__ == "__main__":
+    reviewer.run()
