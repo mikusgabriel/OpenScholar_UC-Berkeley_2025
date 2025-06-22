@@ -259,6 +259,7 @@ export async function getPapersList(): Promise<Paper[]> {
                 try {
                     const branchData = await getRepositoryBranches(repo.name);
                     branches = branchData.map(b => b.name);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error) {
                     console.log(`Could not fetch branches for ${repo.name}`);
                 }
@@ -298,6 +299,7 @@ export async function getPaperById(paperId: string): Promise<Paper | null> {
                     paper.branches = branches.map(b => b.name);
                     paper.updatedAt = new Date(repoInfo.updated_at).toLocaleDateString();
                 }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
                 console.log("Using existing paper data");
             }
