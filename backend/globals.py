@@ -12,11 +12,14 @@ if not os.path.exists(GLOBAL_ACTION_MAP_FILE):
 
 
 def read_global_action_map(agent_type: str):
+    print("read")
     with open(GLOBAL_ACTION_MAP_FILE, "r") as f:
-        return json.load(f)[agent_type].content
+        return json.load(f)[agent_type]
 
 
 def write_global_action_map(data):
+    print("write")
+
     def convert(obj):
         if isinstance(obj, bytes):
             return base64.b64encode(obj).decode("utf-8")
