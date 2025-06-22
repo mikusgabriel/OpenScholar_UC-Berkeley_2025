@@ -97,11 +97,11 @@ export async function getRepositoryBranches(repositoryName: string): Promise<Rep
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                request: "Get the branches of the repository " + repositoryName,
+                request: "List Branches of repo: " + repositoryName,
                 content: {
                     "type": "versionner",
-                    "content": "get_repository_branches",
-                    "message": "Get the branches of the repository " + repositoryName,
+                    "content": "list_branches",
+                    "message": "List Branches of repo: " + repositoryName,
                 }
             }),
         });
@@ -171,8 +171,9 @@ export async function getRepositoriesList(): Promise<RepositoryInfo[]> {
 
         const data = await response.json();
         console.log(data);
-        const files = await getRepositoryFiles(data.content.content.data[0].name);
-        console.log(files);
+        // const files = await getRepositoryFiles(data.content.content.data[0].name);
+        // console.log(files);
+        const branches = await getRepositoryBranches(data.content.content.data[0].name);
 
         return data.content.content.data || [];
     } catch (error) {

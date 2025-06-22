@@ -32,7 +32,7 @@ export default function Header() {
                 <FileText className="w-4 h-4 text-white" />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-lg font-semibold text-gray-900 leading-tight">Research Editor</h1>
+                <h1 className="text-lg font-semibold text-gray-900 leading-tight">Research.it</h1>
 
               </div>
             </div>

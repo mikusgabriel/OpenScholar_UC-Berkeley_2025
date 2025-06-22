@@ -13,6 +13,7 @@ from git_functions import (
     pull_branch_commit,
     list_files,
     list_branches,
+    get_repository_info,
     list_repositories,
     list_pull_requests,
     create_pull_request_func,
@@ -306,10 +307,10 @@ tools = [
         "parameters": {
             "type": "object",
             "properties": {
-                "repo": {
-                    "type": "string",
-                    "description": "Repository name."
-                }
+            "repo": {
+                "type": "string",
+                "description": "Repository name."
+            }
             },
             "required": ["repo"]
         }
@@ -333,7 +334,7 @@ tools = [
             "properties": {},
             "required": []
         }
-    },
+    }
     {
         "type": "function",
         "name": "close",
@@ -342,10 +343,8 @@ tools = [
             "type": "object",
             "properties": {},
             "required": []
-        }
     }
 ]
-
 
 def query_openai_chat(query: str) -> str:
     client = OpenAI(
@@ -362,7 +361,6 @@ def query_openai_chat(query: str) -> str:
     )
 
     return chat_completion.output
-
 
 function_map = {
     "create_github_repo": create_github_repo,
@@ -383,13 +381,10 @@ function_map = {
     "close": close,
 }
 
-
 @versionner.on_message(model=Versionner_Request)
 async def handle_review(ctx, sender: str, msg: Versionner_Request):
-    ctx.logger.info(msg.content["type"] + " " +
-                    msg.content["content"] + " " + msg.content["message"])
-    result = query_openai_chat(
-        msg.content["type"] + " File Content:" + msg.content["content"] + " " + msg.content["message"])
+    ctx.logger.info(msg.content["type"] + " " + msg.content["content"] + " " + msg.content["message"])
+    result = query_openai_chat(msg.content["type"] + " File Content:" + msg.content["content"] + " " + msg.content["message"])
     ctx.logger.info(result)
     function_name = result[0].name
     arguments = json.loads(result[0].arguments)
