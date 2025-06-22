@@ -8,8 +8,11 @@ import MarkdownEditor from "@/components/MarkdownEditor";
 import LayoutWrapper from "@/components/layout-wrapper";
 import VoiceRecorder from "@/components/VoiceRecorder";
 import { RequestExport } from "@/api/api";
+import { useParams } from "react-router-dom";
 
 export default function EditorPage() {
+    const { id } = useParams();
+
     const [content, setContent] = useState<string>("");
     const [message, setMessage] = useState<string>("");
 
@@ -75,9 +78,9 @@ export default function EditorPage() {
         }
     }
     async function RequestAgentComplete() {
-        const request = { type: type, content: request_content };
+        const request = { id: id };
         try {
-            const response = await fetch("http://localhost:8000/rest/post", {
+            const response = await fetch("http://localhost:8000/rest/post/complete", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(request),

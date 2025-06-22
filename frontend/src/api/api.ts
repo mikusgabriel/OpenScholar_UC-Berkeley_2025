@@ -113,6 +113,7 @@ export async function getRepositoryBranches(repositoryName: string): Promise<Rep
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function getRepositoryInfo(repositoryName: string): Promise<RepositoryInfo | null> {
     try {
         const response = await fetch("http://localhost:8000/rest/post", {
