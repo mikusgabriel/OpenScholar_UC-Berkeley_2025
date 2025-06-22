@@ -93,7 +93,7 @@ interface RepositoryInfo {
 // API functions for repository operations
 export async function getRepositoryBranches(repositoryName: string): Promise<RepositoryBranch[]> {
     try {
-        const response = await fetch("http://localhost:8000/submit", {
+        const response = await fetch("http://localhost:8000/rest/post", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -115,7 +115,7 @@ export async function getRepositoryBranches(repositoryName: string): Promise<Rep
 
 export async function getRepositoryInfo(repositoryName: string): Promise<RepositoryInfo | null> {
     try {
-        const response = await fetch("http://localhost:8000/submit", {
+        const response = await fetch("http://localhost:8000/rest/post", {
             method: "GET",
             headers: { "Content-Type": "application/json" },
 
@@ -134,16 +134,14 @@ export async function getRepositoryInfo(repositoryName: string): Promise<Reposit
 }
 
 export async function getRepositoriesList(): Promise<RepositoryInfo[]> {
-    const request = {
-        request: "list_repositories",
-        content: "list_repositories",
-    }
-
     try {
-        const response = await fetch("http://localhost:8000/submit", {
+        const response = await fetch("http://localhost:8000/rest/post", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(request),
+            body: JSON.stringify({
+                request: "list_repositories",
+                content: "list_repositories",
+            }),
         });
 
         if (!response.ok) {
