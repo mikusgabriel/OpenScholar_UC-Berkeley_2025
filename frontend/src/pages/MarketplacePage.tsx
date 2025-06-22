@@ -4,18 +4,16 @@ import { useState } from "react";
 import LayoutWrapper from "@/components/layout-wrapper";
 import {
   ShoppingBag,
-  Star,
-  Download,
   Zap,
-  FileText,
-  Palette,
   Search,
-  Filter,
-  ShoppingCart,
   Heart,
   Eye,
-  Users,
   Clock,
+  Monitor,
+  Leaf,
+  FlaskRoundIcon as Flask,
+  Calculator,
+  Cog,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,137 +23,204 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export default function MarketplacePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [cartItems, setCartItems] = useState<string[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
 
   const categories = [
-    { id: "all", title: "All Items", count: 156 },
+    { id: "all", title: "All Themes", count: 156 },
     {
-      id: "templates",
-      title: "Templates",
-      icon: FileText,
-      color: "from-blue-500 to-purple-600",
-      count: 45,
-    },
-    {
-      id: "tools",
-      title: "Tools",
-      icon: Zap,
-      color: "from-green-500 to-emerald-600",
-      count: 32,
-    },
-    {
-      id: "themes",
-      title: "Themes",
-      icon: Palette,
-      color: "from-pink-500 to-rose-600",
+      id: "health",
+      title: "Health & Medicine",
+      icon: Heart,
+      color: "from-red-500 to-pink-600",
       count: 28,
     },
     {
-      id: "plugins",
-      title: "Plugins",
-      icon: Users,
-      color: "from-orange-500 to-yellow-500",
-      count: 51,
+      id: "physics",
+      title: "Physics",
+      icon: Zap,
+      color: "from-blue-500 to-indigo-600",
+      count: 22,
+    },
+    {
+      id: "computer-science",
+      title: "Computer Science",
+      icon: Monitor,
+      color: "from-green-500 to-emerald-600",
+      count: 35,
+    },
+    {
+      id: "biology",
+      title: "Biology",
+      icon: Leaf,
+      color: "from-emerald-500 to-teal-600",
+      count: 19,
+    },
+    {
+      id: "chemistry",
+      title: "Chemistry",
+      icon: Flask,
+      color: "from-purple-500 to-violet-600",
+      count: 16,
+    },
+    {
+      id: "mathematics",
+      title: "Mathematics",
+      icon: Calculator,
+      color: "from-orange-500 to-amber-600",
+      count: 24,
+    },
+    {
+      id: "engineering",
+      title: "Engineering",
+      icon: Cog,
+      color: "from-gray-500 to-slate-600",
+      count: 12,
     },
   ];
 
   const marketplaceItems = [
     {
       id: "1",
-      title: "Academic Paper Template Pro",
+      title: "Medical Research Template Pro",
       description:
-        "Professional template for academic research papers with IEEE formatting",
-      price: 12.99,
-      originalPrice: 19.99,
-      rating: 4.8,
-      reviews: 234,
-      downloads: "2.1k",
-      category: "templates",
-      image: "📄",
-      tags: ["Academic", "IEEE", "Professional"],
-      author: "Dr. Smith",
-      lastUpdated: "2 days ago",
-      featured: true,
-    },
-    {
-      id: "2",
-      title: "Citation Manager Pro",
-      description:
-        "Advanced citation management and formatting tool with APA, MLA, Chicago styles",
-      price: 24.99,
-      rating: 4.9,
-      reviews: 189,
-      downloads: "1.8k",
-      category: "tools",
-      image: "📚",
-      tags: ["Citations", "APA", "MLA", "Chicago"],
-      author: "RefTools Inc",
-      lastUpdated: "1 week ago",
-      featured: true,
-    },
-    {
-      id: "3",
-      title: "Modern Research Theme",
-      description:
-        "Clean and modern theme for research presentations and documents",
-      price: 8.99,
-      rating: 4.7,
-      reviews: 156,
-      downloads: "3.2k",
-      category: "themes",
-      image: "🎨",
-      tags: ["Modern", "Clean", "Presentation"],
-      author: "DesignLab",
-      lastUpdated: "3 days ago",
-      featured: false,
-    },
-    {
-      id: "4",
-      title: "LaTeX Converter Plugin",
-      description:
-        "Convert your markdown documents to LaTeX format with advanced formatting",
-      price: 15.99,
-      rating: 4.6,
-      reviews: 98,
-      downloads: "1.2k",
-      category: "plugins",
-      image: "⚡",
-      tags: ["LaTeX", "Converter", "Markdown"],
-      author: "TechTools",
-      lastUpdated: "5 days ago",
-      featured: false,
-    },
-    {
-      id: "5",
-      title: "Scientific Journal Template",
-      description:
-        "Template designed for scientific journal submissions with multiple formats",
-      price: 18.99,
-      rating: 4.9,
-      reviews: 312,
-      downloads: "2.8k",
-      category: "templates",
-      image: "🔬",
-      tags: ["Scientific", "Journal", "Submission"],
-      author: "SciWrite",
+        "Professional template for medical research papers with NEJM and JAMA formatting standards",
+      category: "health",
+      image: "🏥",
+      tags: ["Medical", "NEJM", "Clinical Trial", "Healthcare"],
+      author: "Dr. Sarah Chen",
       lastUpdated: "1 day ago",
       featured: true,
     },
     {
-      id: "6",
-      title: "Grammar & Style Checker",
+      id: "2",
+      title: "Quantum Physics Paper Template",
       description:
-        "AI-powered grammar and style checker specifically for academic writing",
-      price: 29.99,
-      rating: 4.8,
-      reviews: 445,
-      downloads: "4.1k",
-      category: "tools",
-      image: "✍️",
-      tags: ["Grammar", "AI", "Academic"],
-      author: "WriteWell AI",
+        "Specialized template for quantum physics research with equation formatting and diagram support",
+      category: "physics",
+      image: "⚛️",
+      tags: ["Quantum", "Physics", "Equations", "Diagrams"],
+      author: "Prof. Einstein Lab",
+      lastUpdated: "3 days ago",
+      featured: true,
+    },
+    {
+      id: "3",
+      title: "Computer Science Research Suite",
+      description:
+        "Complete template suite for CS papers including algorithm pseudocode and code blocks",
+      category: "computer-science",
+      image: "💻",
+      tags: ["Algorithms", "Code", "Software", "AI/ML"],
+      author: "TechPaper Inc",
+      lastUpdated: "2 days ago",
+      featured: true,
+    },
+    {
+      id: "4",
+      title: "Biological Research Template",
+      description:
+        "Template designed for biological research with species classification and genetic notation",
+      category: "biology",
+      image: "🧬",
+      tags: ["Biology", "Genetics", "Species", "Research"],
+      author: "BioLab Solutions",
+      lastUpdated: "1 week ago",
+      featured: false,
+    },
+    {
+      id: "5",
+      title: "Chemistry Lab Report Template",
+      description:
+        "Professional chemistry template with molecular structure support and reaction equations",
+      category: "chemistry",
+      image: "🧪",
+      tags: ["Chemistry", "Molecules", "Reactions", "Lab"],
+      author: "ChemWrite Pro",
       lastUpdated: "4 days ago",
+      featured: false,
+    },
+    {
+      id: "6",
+      title: "Mathematical Proof Template",
+      description:
+        "Advanced template for mathematical proofs with theorem formatting and symbol support",
+      category: "mathematics",
+      image: "📐",
+      tags: ["Mathematics", "Proofs", "Theorems", "Symbols"],
+      author: "MathTeX Solutions",
+      lastUpdated: "5 days ago",
+      featured: true,
+    },
+    {
+      id: "7",
+      title: "Engineering Design Template",
+      description:
+        "Comprehensive template for engineering papers with CAD integration and technical drawings",
+      category: "engineering",
+      image: "⚙️",
+      tags: ["Engineering", "CAD", "Design", "Technical"],
+      author: "EngiPaper Ltd",
+      lastUpdated: "6 days ago",
+      featured: false,
+    },
+    {
+      id: "8",
+      title: "Epidemiology Study Template",
+      description:
+        "Specialized template for epidemiological studies with statistical analysis sections",
+      category: "health",
+      image: "📊",
+      tags: ["Epidemiology", "Statistics", "Public Health", "Data"],
+      author: "EpiResearch Group",
+      lastUpdated: "2 days ago",
+      featured: false,
+    },
+    {
+      id: "9",
+      title: "Astrophysics Research Template",
+      description:
+        "Template for astrophysics papers with celestial coordinate systems and observation data",
+      category: "physics",
+      image: "🌌",
+      tags: ["Astrophysics", "Astronomy", "Observations", "Space"],
+      author: "Cosmic Papers",
+      lastUpdated: "1 week ago",
+      featured: false,
+    },
+    {
+      id: "10",
+      title: "Machine Learning Paper Template",
+      description:
+        "Modern template for ML research with model architecture diagrams and performance metrics",
+      category: "computer-science",
+      image: "🤖",
+      tags: ["Machine Learning", "AI", "Neural Networks", "Data Science"],
+      author: "AI Research Hub",
+      lastUpdated: "1 day ago",
+      featured: true,
+    },
+    {
+      id: "11",
+      title: "Organic Chemistry Template",
+      description:
+        "Specialized template for organic chemistry with reaction mechanisms and synthesis pathways",
+      category: "chemistry",
+      image: "🔬",
+      tags: ["Organic Chemistry", "Synthesis", "Mechanisms", "Compounds"],
+      author: "OrganicChem Pro",
+      lastUpdated: "3 days ago",
+      featured: false,
+    },
+    {
+      id: "12",
+      title: "Statistical Analysis Template",
+      description:
+        "Comprehensive template for statistical research with R and Python code integration",
+      category: "mathematics",
+      image: "📈",
+      tags: ["Statistics", "R", "Python", "Data Analysis"],
+      author: "StatsPaper Solutions",
+      lastUpdated: "2 days ago",
       featured: false,
     },
   ];
@@ -171,12 +236,6 @@ export default function MarketplacePage() {
       selectedCategory === "all" || item.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
-  const addToCart = (itemId: string) => {
-    if (!cartItems.includes(itemId)) {
-      setCartItems([...cartItems, itemId]);
-    }
-  };
 
   const toggleFavorite = (itemId: string) => {
     if (favorites.includes(itemId)) {
@@ -208,19 +267,6 @@ export default function MarketplacePage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                className="bg-white/80 border-purple-200/50 text-gray-800 hover:bg-purple-50/50"
-              >
-                <Heart className="w-4 h-4 mr-2" />
-                Favorites ({favorites.length})
-              </Button>
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200">
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                Cart ({cartItems.length})
-              </Button>
-            </div>
           </div>
 
           {/* Search and Filter Bar */}
@@ -234,13 +280,6 @@ export default function MarketplacePage() {
                 className="pl-10 bg-white/80 border-purple-200/50 focus:border-purple-400 focus:ring-purple-400/20"
               />
             </div>
-            <Button
-              variant="outline"
-              className="bg-white/80 border-purple-200/50 text-gray-800 hover:bg-purple-50/50"
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              Filters
-            </Button>
           </div>
         </div>
 
@@ -337,18 +376,6 @@ export default function MarketplacePage() {
                       ))}
                     </div>
 
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="font-medium">{item.rating}</span>
-                        <span>({item.reviews})</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Download className="w-4 h-4" />
-                        <span>{item.downloads}</span>
-                      </div>
-                    </div>
-
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <span>by {item.author}</span>
                       <div className="flex items-center gap-1">
@@ -358,25 +385,11 @@ export default function MarketplacePage() {
                     </div>
 
                     <div className="flex items-center justify-between pt-2 border-t border-gray-200/50">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-lg text-gray-900">
-                          ${item.price}
-                        </span>
-                        {item.originalPrice && (
-                          <span className="text-sm text-gray-500 line-through">
-                            ${item.originalPrice}
-                          </span>
-                        )}
-                      </div>
                       <Button
-                        onClick={() => addToCart(item.id)}
-                        disabled={cartItems.includes(item.id)}
                         className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-md transition-all duration-200 text-sm"
                         size="sm"
                       >
-                        {cartItems.includes(item.id)
-                          ? "In Cart"
-                          : "Add to Cart"}
+                        Invest In
                       </Button>
                     </div>
                   </CardContent>
@@ -397,16 +410,6 @@ export default function MarketplacePage() {
                 ({filteredItems.length} items)
               </span>
             </h3>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Sort by:</span>
-              <select className="bg-white/80 border border-purple-200/50 rounded-lg px-3 py-1 text-sm focus:border-purple-400 focus:ring-purple-400/20">
-                <option>Most Popular</option>
-                <option>Newest</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Highest Rated</option>
-              </select>
-            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -445,28 +448,14 @@ export default function MarketplacePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                      <span>{item.rating}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Download className="w-3 h-3" />
-                      <span>{item.downloads}</span>
-                    </div>
-                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500"></div>
 
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-gray-900">
-                      ${item.price}
-                    </span>
                     <Button
-                      onClick={() => addToCart(item.id)}
-                      disabled={cartItems.includes(item.id)}
                       className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-md transition-all duration-200"
                       size="sm"
                     >
-                      {cartItems.includes(item.id) ? "In Cart" : "Add"}
+                      Invest In
                     </Button>
                   </div>
                 </CardContent>
