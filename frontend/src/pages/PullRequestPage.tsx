@@ -4,12 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { getRepositoryBranches } from "@/api/api";
+import { useParams, useLocation } from "react-router-dom";
 
 export default function PullRequestPage() {
+    const { title } = useParams();
+    const location = useLocation();
     const [selectedBranch, setSelectedBranch] = useState("main");
     const [isBranchDropdownOpen, setIsBranchDropdownOpen] = useState(false);
     const [branches, setBranches] = useState<Array<{ name: string; isDefault: boolean }>>([]);
     const [loading, setLoading] = useState(true);
+
+    // Get content from navigation state
+    const paperContent = location.state?.content || "";
 
     // Fetch branches from API
     useEffect(() => {
@@ -44,24 +50,26 @@ export default function PullRequestPage() {
         fetchBranches();
     }, []);
 
+    // Customize pull request data based on the paper title
     const pullRequest = {
         id: 42,
-        title: "Add comprehensive methodology section to research paper",
-        description: `This pull request adds a detailed methodology section to our research paper covering:
+        title: `AI Review: ${title || "Research Paper"}`,
+        description: `This pull request contains AI-generated improvements and suggestions for the research paper "${title || "Research Paper"}".
 
-- Data collection procedures and protocols
-- Statistical analysis methods and tools used
-- Sample size calculations and power analysis
-- Quality control measures and validation steps
-- Ethical considerations and IRB approval details
+The AI reviewer has analyzed the content and provided:
+- Enhanced methodology sections
+- Improved data analysis approaches
+- Better formatting and structure
+- Additional references and citations
+- Grammar and clarity improvements
 
-The methodology section follows the journal's guidelines and includes all necessary details for reproducibility.`,
+All changes maintain the original research intent while improving overall quality and readability.`,
         author: {
             name: "AI Reviewer",
             avatar: "AR",
         },
         status: "open",
-        branch: "feature/methodology-section",
+        branch: "feature/ai-review",
         target: "main",
         commits: 8,
         additions: 456,
@@ -215,9 +223,47 @@ The methodology section follows the journal's guidelines and includes all necess
                     <div className="lg:col-span-3 space-y-6">
                         {/* Main Content Panel */}
                         <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/20 shadow-lg shadow-purple-500/5">
-                            <h3 className="font-semibold text-gray-900 mb-4">Main Content</h3>
-                            <div className="text-gray-500 text-center py-8">
-                                Content will be displayed here
+                            <h3 className="font-semibold text-gray-900 mb-4">AI Review for: {title || "Research Paper"}</h3>
+                            <div className="prose prose-sm text-gray-700 max-w-none">
+                                {paperContent ? (
+                                    <>
+                                        <h4 className="text-lg font-semibold text-gray-900 mb-3">Paper Content</h4>
+                                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+                                            <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono">{paperContent}</pre>
+                                        </div>
+
+                                        <h4 className="text-lg font-semibold text-gray-900 mb-3">AI Review Summary</h4>
+                                        <p className="text-gray-600 mb-4">
+                                            The AI reviewer has analyzed your research paper and suggested several improvements to enhance clarity,
+                                            methodology, and overall quality while maintaining the original research objectives.
+                                        </p>
+
+                                        <h4 className="text-lg font-semibold text-gray-900 mb-3">Key Improvements</h4>
+                                        <ul className="space-y-2 text-gray-600">
+                                            <li>• <strong>Methodology Enhancement:</strong> Added detailed experimental procedures and statistical analysis methods</li>
+                                            <li>• <strong>Data Presentation:</strong> Improved figure and table formatting for better readability</li>
+                                            <li>• <strong>Literature Review:</strong> Enhanced citations and references for better academic rigor</li>
+                                            <li>• <strong>Language Clarity:</strong> Improved sentence structure and technical terminology</li>
+                                            <li>• <strong>Results Analysis:</strong> Strengthened the discussion of findings and their implications</li>
+                                        </ul>
+
+                                        <h4 className="text-lg font-semibold text-gray-900 mb-3 mt-6">Review Status</h4>
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                            <span className="text-sm text-gray-600">Pending human review and approval</span>
+                                        </div>
+
+                                        <p className="text-sm text-gray-500">
+                                            The AI has completed its review and suggestions. Please review the changes and provide feedback
+                                            on whether you'd like to accept, modify, or reject any of the proposed improvements.
+                                        </p>
+                                    </>
+                                ) : (
+                                    <div className="text-gray-500 text-center py-8">
+                                        <p>No paper content available for review.</p>
+                                        <p className="text-sm mt-2">Please create a pull request from the editor page.</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -247,6 +293,24 @@ The methodology section follows the journal's guidelines and includes all necess
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+
+                            {/* Add Comment */}
+                            <div className="mt-6 pt-6 border-t border-white/20">
+                                <div className="flex gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                        You
+                                    </div>
+                                    <div className="flex-1">
+                                        <Textarea
+                                            placeholder="Leave a comment..."
+                                            className="bg-white/80 border-purple-200/50 focus:border-purple-400 focus:ring-purple-400/20 mb-3"
+                                        />
+                                        <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200">
+                                            Comment
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
