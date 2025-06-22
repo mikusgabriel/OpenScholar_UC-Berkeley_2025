@@ -1,4 +1,5 @@
 from openai import OpenAI
+import asyncio
 from uagents import Agent
 from schema import Reviewer_Request, Versionner_Request, Branch_Request
 import dotenv
@@ -407,13 +408,14 @@ async def handle_review(ctx, sender: str, msg: Versionner_Request):
         if function_name == "pull_chain":
             reviewer_address = agent_addresses["reviewer"]
             await ctx.send(reviewer_address, message=Reviewer_Request(type="reviewer", content={"paper_description": "This is a PR for " + json.dumps(msg.content) + " at:" + str(arguments), "pr": "id"}))    
-
+            
             result_pr = read_global_action_map("reviewer")
             if result_pr:
                 result = function_map[function_name](**arguments)
-    result = function_map[function_name](**arguments)
 
-    write_global_action_map("versionner", result_pr)
+            write_global_action_map("versionner", result_pr)
 
+        result = function_map[function_name](**arguments)
+    write_global_action_map("versionner", result)
 if __name__ == "__main__":
     versionner.run()
