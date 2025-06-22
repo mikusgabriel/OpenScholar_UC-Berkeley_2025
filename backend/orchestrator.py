@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-agent_addresses = {"exporter": "agent1q053knjgqywahnys5vj4k0w967xxaay7rn7nmmvvxpjlxzdxht8xzemvcyy",
+agent_addresses = {"exporter": "agent1q053knjgqywahnys5vj4k0w967xxaay7rn7nmmvvxpjlxzdxht8xzemvcyy","bank":"agent1qvsyu94yd2efs3ya0yand5cdeef99gjvu8xfg6z7xjjf9pd4fh8m2hh27uc",
                    "versionner": "agent1q0p929thm82psch2u6xpux4rtvqnxkpt7sd7p4awue3h470lm9sdqm5qyth", "orchestrator": " agent1qtkzseh60dl6pjjlx2ysg49pwfmyj4sjyluaukw4mazv8jfekcyrvyyghsk", "transferrer": "agent1qvsyu94yd2efs3ya0yand5cdeef99gjvu8xfg6z7xjjf9pd4fh8m2hh27uc"}
 
 orchestrator = Agent(name="orchestrator", seed="orchestrator", mailbox=True)
@@ -167,6 +167,31 @@ async def handle_post_transaction(ctx: Context, req: Transferer_Request) -> Tran
         agent_address=ctx.agent.address
     )
 
+from supabase import create_client, Client
+supabase: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+
+@orchestrator.on_rest_post("/rest/post/complete", Orchestrator_Request, Orchestrator_Response)
+async def handle_post_transaction(ctx: Context, req: Orchestrator_Request) -> Orchestrator_Response:
+    id = req.type
+    price = float(req.content)
+
+    supabasekey = supabase.from_("keys_stuff").select("private").eq("name", id).execute().data[0]["private"]
+
+    am = get_blame_hashmap(id, "main", "research.md")
+    for key, value in am.items():
+        amount = value * price
+        user_query = supabase.schema("public").table("keys_stuff").select("*").eq("username", key).execute()
+        if user_query.data:
+            ctx.send(agent_addresses["bank"], message=Transferer_Request(type=id, content={price:amount, hex_priv: supabasekey, to_address: user_query}))    
+
+    write_global_action_map("orchestrator", {"status": "sent la moula gars"})
+    return Orchestrator_Response(
+        timestamp=int(time.time()),
+        type=transferrer,
+        content=Exporter_Response(
+            type=transferrer, content=read_global_action_map(transferrer)),
+        agent_address=ctx.agent.address
+    )
 
 if __name__ == "__main__":
     orchestrator.run()
