@@ -1,36 +1,31 @@
-"use client";
-
-import { useState } from "react";
-import LayoutWrapper from "@/components/layout-wrapper";
+import { useState } from "react"
+import LayoutWrapper from "@/components/layout-wrapper"
 import {
   ShoppingBag,
   Zap,
   Search,
-  Heart,
-  Eye,
   Clock,
   Monitor,
   Leaf,
   FlaskRoundIcon as Flask,
   Calculator,
   Cog,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  Users,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function MarketplacePage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all")
 
   const categories = [
-    { id: "all", title: "All Themes", count: 156 },
+    { id: "all", title: "All Research Areas", count: 156 },
     {
       id: "health",
       title: "Health & Medicine",
-      icon: Heart,
       color: "from-red-500 to-pink-600",
       count: 28,
     },
@@ -76,177 +71,180 @@ export default function MarketplacePage() {
       color: "from-gray-500 to-slate-600",
       count: 12,
     },
-  ];
+  ]
 
   const marketplaceItems = [
-    {
-      id: "1",
-      title: "Medical Research Template Pro",
-      description:
-        "Professional template for medical research papers with NEJM and JAMA formatting standards",
-      category: "health",
-      image: "🏥",
-      tags: ["Medical", "NEJM", "Clinical Trial", "Healthcare"],
-      author: "Dr. Sarah Chen",
-      lastUpdated: "1 day ago",
-      featured: true,
-    },
-    {
-      id: "2",
-      title: "Quantum Physics Paper Template",
-      description:
-        "Specialized template for quantum physics research with equation formatting and diagram support",
-      category: "physics",
-      image: "⚛️",
-      tags: ["Quantum", "Physics", "Equations", "Diagrams"],
-      author: "Prof. Einstein Lab",
-      lastUpdated: "3 days ago",
-      featured: true,
-    },
-    {
-      id: "3",
-      title: "Computer Science Research Suite",
-      description:
-        "Complete template suite for CS papers including algorithm pseudocode and code blocks",
-      category: "computer-science",
-      image: "💻",
-      tags: ["Algorithms", "Code", "Software", "AI/ML"],
-      author: "TechPaper Inc",
-      lastUpdated: "2 days ago",
-      featured: true,
-    },
-    {
-      id: "4",
-      title: "Biological Research Template",
-      description:
-        "Template designed for biological research with species classification and genetic notation",
-      category: "biology",
-      image: "🧬",
-      tags: ["Biology", "Genetics", "Species", "Research"],
-      author: "BioLab Solutions",
-      lastUpdated: "1 week ago",
-      featured: false,
-    },
-    {
-      id: "5",
-      title: "Chemistry Lab Report Template",
-      description:
-        "Professional chemistry template with molecular structure support and reaction equations",
-      category: "chemistry",
-      image: "🧪",
-      tags: ["Chemistry", "Molecules", "Reactions", "Lab"],
-      author: "ChemWrite Pro",
-      lastUpdated: "4 days ago",
-      featured: false,
-    },
-    {
-      id: "6",
-      title: "Mathematical Proof Template",
-      description:
-        "Advanced template for mathematical proofs with theorem formatting and symbol support",
-      category: "mathematics",
-      image: "📐",
-      tags: ["Mathematics", "Proofs", "Theorems", "Symbols"],
-      author: "MathTeX Solutions",
-      lastUpdated: "5 days ago",
-      featured: true,
-    },
-    {
-      id: "7",
-      title: "Engineering Design Template",
-      description:
-        "Comprehensive template for engineering papers with CAD integration and technical drawings",
-      category: "engineering",
-      image: "⚙️",
-      tags: ["Engineering", "CAD", "Design", "Technical"],
-      author: "EngiPaper Ltd",
-      lastUpdated: "6 days ago",
-      featured: false,
-    },
-    {
-      id: "8",
-      title: "Epidemiology Study Template",
-      description:
-        "Specialized template for epidemiological studies with statistical analysis sections",
-      category: "health",
-      image: "📊",
-      tags: ["Epidemiology", "Statistics", "Public Health", "Data"],
-      author: "EpiResearch Group",
-      lastUpdated: "2 days ago",
-      featured: false,
-    },
-    {
-      id: "9",
-      title: "Astrophysics Research Template",
-      description:
-        "Template for astrophysics papers with celestial coordinate systems and observation data",
-      category: "physics",
-      image: "🌌",
-      tags: ["Astrophysics", "Astronomy", "Observations", "Space"],
-      author: "Cosmic Papers",
-      lastUpdated: "1 week ago",
-      featured: false,
-    },
-    {
-      id: "10",
-      title: "Machine Learning Paper Template",
-      description:
-        "Modern template for ML research with model architecture diagrams and performance metrics",
-      category: "computer-science",
-      image: "🤖",
-      tags: ["Machine Learning", "AI", "Neural Networks", "Data Science"],
-      author: "AI Research Hub",
-      lastUpdated: "1 day ago",
-      featured: true,
-    },
-    {
-      id: "11",
-      title: "Organic Chemistry Template",
-      description:
-        "Specialized template for organic chemistry with reaction mechanisms and synthesis pathways",
-      category: "chemistry",
-      image: "🔬",
-      tags: ["Organic Chemistry", "Synthesis", "Mechanisms", "Compounds"],
-      author: "OrganicChem Pro",
-      lastUpdated: "3 days ago",
-      featured: false,
-    },
-    {
-      id: "12",
-      title: "Statistical Analysis Template",
-      description:
-        "Comprehensive template for statistical research with R and Python code integration",
-      category: "mathematics",
-      image: "📈",
-      tags: ["Statistics", "R", "Python", "Data Analysis"],
-      author: "StatsPaper Solutions",
-      lastUpdated: "2 days ago",
-      featured: false,
-    },
-  ];
+  {
+    id: "1",
+    company: "OncoNova Therapeutics",
+    title: "Efficacy of Immunotherapy in Late-Stage Melanoma",
+    description:
+      "This study seeks collaborators to analyze immunotherapy outcomes across global oncology centers. Focus on cross-institutional data harmonization and patient outcome modeling.",
+    category: "health",
+    image: "🏥",
+    tags: ["Medical", "Oncology", "Clinical Trial", "Multi-center"],
+    contributors: 12,
+    lastUpdated: "1 day ago",
+    featured: true,
+  },
+  {
+    id: "2",
+    company: "QBit Research Labs",
+    title: "Qubit Stability in Quantum Error Correction Systems",
+    description:
+      "Open-source repository focused on developing scalable error correction algorithms for NISQ-era quantum devices. Theoretical physicists and hardware integrators welcome.",
+    category: "physics",
+    image: "⚛️",
+    tags: ["Quantum", "Computing", "Error Correction", "Algorithms"],
+    contributors: 8,
+    lastUpdated: "3 days ago",
+    featured: true,
+  },
+  {
+    id: "3",
+    company: "MedEthix Initiative",
+    title: "Ethical Oversight Framework for AI Diagnostic Tools",
+    description:
+      "Inviting contributors to co-develop an ethical framework for AI-based medical diagnostics. Interdisciplinary input from clinicians, ethicists, and AI researchers encouraged.",
+    category: "computer-science",
+    image: "💻",
+    tags: ["AI Ethics", "Healthcare", "Machine Learning", "Policy"],
+    contributors: 15,
+    lastUpdated: "2 days ago",
+    featured: true,
+  },
+  {
+    id: "4",
+    company: "UrbanEco Collective",
+    title: "Urban Green Corridors for Insect Biodiversity",
+    description:
+      "Project aims to evaluate biodiversity corridors across 10 major cities. Seeks ecologists and spatial data analysts for fieldwork coordination and data modeling.",
+    category: "biology",
+    image: "🧬",
+    tags: ["Ecology", "Conservation", "Urban Planning", "Biodiversity"],
+    contributors: 6,
+    lastUpdated: "1 week ago",
+    featured: false,
+  },
+  {
+    id: "5",
+    company: "GreenChem Corp",
+    title: "Solvent-Free Organic Synthesis for Industrial Use",
+    description:
+      "Developing solvent-free reaction mechanisms to reduce industrial emissions. Seeking collaboration with synthetic chemists for pilot reaction testing and scalability assessment.",
+    category: "chemistry",
+    image: "🧪",
+    tags: ["Green Chemistry", "Sustainability", "Synthesis", "Environment"],
+    contributors: 9,
+    lastUpdated: "4 days ago",
+    featured: false,
+  },
+  {
+    id: "6",
+    company: "ClimateModeling Alliance (CliMA)",
+    title: "Mathematical Frameworks for Multi-Decadal Climate Projection",
+    description:
+      "Developing predictive PDE-based models for long-term climate scenarios. Looking for collaborators to refine temporal resolution and validation datasets.",
+    category: "mathematics",
+    image: "📐",
+    tags: ["Climate Science", "Mathematical Modeling", "Data Analysis", "Prediction"],
+    contributors: 11,
+    lastUpdated: "5 days ago",
+    featured: true,
+  },
+  {
+    id: "7",
+    company: "GridNova Energy",
+    title: "Smart Grid Design for Solar and Wind Integration",
+    description:
+      "Designing next-gen smart grid architecture for decentralized renewables. Engineers with expertise in control systems and grid policy are invited to contribute simulation models.",
+    category: "engineering",
+    image: "⚙️",
+    tags: ["Renewable Energy", "Smart Grid", "Engineering", "Policy"],
+    contributors: 7,
+    lastUpdated: "6 days ago",
+    featured: false,
+  },
+  {
+    id: "8",
+    company: "GlobalHealthNow",
+    title: "Cross-National Protocol for Pandemic Response Planning",
+    description:
+      "Proposes a data-driven response framework for pandemics. Seeking global contributors for modeling, policy benchmarking, and logistics planning.",
+    category: "health",
+    image: "📊",
+    tags: ["Epidemiology", "Public Health", "Policy", "Global Health"],
+    contributors: 18,
+    lastUpdated: "2 days ago",
+    featured: false,
+  },
+  {
+    id: "9",
+    company: "Astroparticle Physics Institute",
+    title: "Next-Generation Cryogenic Sensors for Dark Matter Detection",
+    description:
+      "Research aims to test a new generation of cryogenic detectors. Open to experimental physicists and simulation specialists.",
+    category: "physics",
+    image: "🌌",
+    tags: ["Dark Matter", "Particle Physics", "Detection", "Cosmology"],
+    contributors: 14,
+    lastUpdated: "1 week ago",
+    featured: false,
+  },
+  {
+    id: "10",
+    company: "SciExplain AI",
+    title: "Interpretable Deep Learning for Scientific Literature Analysis",
+    description:
+      "Builds interpretable ML tools for semantic clustering and citation tracing. Open to NLP researchers and domain scientists.",
+    category: "computer-science",
+    image: "🤖",
+    tags: ["Explainable AI", "Scientific Computing", "Machine Learning", "Research Tools"],
+    contributors: 13,
+    lastUpdated: "1 day ago",
+    featured: true,
+  },
+  {
+    id: "11",
+    company: "BlueOceans Lab",
+    title: "Quantifying Microplastic Accumulation in Coral Reef Systems",
+    description:
+      "Studies microplastic impact on coral reef biodiversity using chemical assays and remote sensing. Marine ecologists and chemists encouraged to apply.",
+    category: "chemistry",
+    image: "🔬",
+    tags: ["Environmental Chemistry", "Marine Biology", "Pollution", "Ecosystems"],
+    contributors: 10,
+    lastUpdated: "3 days ago",
+    featured: false,
+  },
+  {
+    id: "12",
+    company: "BioStatTech",
+    title: "Machine Learning-Assisted Genomic Association Mapping",
+    description:
+      "Proposes an open pipeline for mapping gene-disease associations using ML and statistical modeling. Contributions from bioinformaticians and statisticians are highly valued.",
+    category: "mathematics",
+    image: "📈",
+    tags: ["Biostatistics", "Genomics", "Data Science", "Statistical Methods"],
+    contributors: 16,
+    lastUpdated: "2 days ago",
+    featured: false,
+  },
+]
+
+
 
   const filteredItems = marketplaceItems.filter((item) => {
     const matchesSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.tags.some((tag) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    const matchesCategory =
-      selectedCategory === "all" || item.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+      item.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory
+    return matchesSearch && matchesCategory
+  })
 
-  const toggleFavorite = (itemId: string) => {
-    if (favorites.includes(itemId)) {
-      setFavorites(favorites.filter((id) => id !== itemId));
-    } else {
-      setFavorites([...favorites, itemId]);
-    }
-  };
-
-  const featuredItems = filteredItems.filter((item) => item.featured);
-  const regularItems = filteredItems.filter((item) => !item.featured);
+  const featuredItems = filteredItems.filter((item) => item.featured)
+  const regularItems = filteredItems.filter((item) => !item.featured)
 
   return (
     <LayoutWrapper>
@@ -259,10 +257,10 @@ export default function MarketplacePage() {
                 <ShoppingBag className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Marketplace
-                </h2>
-                <p className="text-gray-600">Discover topics to invest in.</p>
+                <h2 className="text-2xl font-bold text-gray-900">Research Marketplace</h2>
+                <p className="text-gray-600">
+                  Discover collaborative research proposals and contribute to cutting-edge studies
+                </p>
               </div>
             </div>
           </div>
@@ -272,7 +270,7 @@ export default function MarketplacePage() {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
-                placeholder="Search templates, tools, themes..."
+                placeholder="Search research proposals, studies, topics..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-white/80 border-purple-200/50 focus:border-purple-400 focus:ring-purple-400/20"
@@ -287,11 +285,10 @@ export default function MarketplacePage() {
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl whitespace-nowrap transition-all duration-200 ${
-                selectedCategory === category.id
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25"
-                  : "bg-white/70 text-gray-700 hover:bg-white/90 border border-white/20"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl whitespace-nowrap transition-all duration-200 ${selectedCategory === category.id
+                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25"
+                : "bg-white/70 text-gray-700 hover:bg-white/90 border border-white/20"
+                }`}
             >
               {category.icon && <category.icon className="w-4 h-4" />}
               <span className="font-medium">{category.title}</span>
@@ -306,13 +303,8 @@ export default function MarketplacePage() {
         {featuredItems.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Featured Items
-              </h3>
-              <Button
-                variant="ghost"
-                className="text-purple-600 hover:text-purple-700"
-              >
+              <h3 className="text-lg font-semibold text-gray-900">Featured Research Proposals</h3>
+              <Button variant="ghost" className="text-purple-600 hover:text-purple-700">
                 View All Featured
               </Button>
             </div>
@@ -325,60 +317,32 @@ export default function MarketplacePage() {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="text-3xl mb-2">{item.image}</div>
-                      <div className="flex gap-1">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => toggleFavorite(item.id)}
-                          className={`p-1 h-8 w-8 ${
-                            favorites.includes(item.id)
-                              ? "text-red-500"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          <Heart
-                            className="w-4 h-4"
-                            fill={
-                              favorites.includes(item.id)
-                                ? "currentColor"
-                                : "none"
-                            }
-                          />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="p-1 h-8 w-8 text-gray-400"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </div>
                     </div>
                     <CardTitle className="text-base group-hover:text-purple-700 transition-colors">
                       {item.title}
                     </CardTitle>
-                    <p className="text-sm text-gray-600 line-clamp-2">
-                      {item.description}
-                    </p>
+                    <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex flex-wrap gap-1">
                       {item.tags.map((tag) => (
-                        <Badge
-                          key={tag}
-                          variant="secondary"
-                          className="text-xs bg-purple-100/50 text-purple-700"
-                        >
+                        <Badge key={tag} variant="secondary" className="text-xs bg-purple-100/50 text-purple-700">
                           {tag}
                         </Badge>
                       ))}
                     </div>
 
                     <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>by {item.author}</span>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{item.lastUpdated}</span>
+                      <span>opened by {item.company}</span>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1">
+                          <Users className="w-3 h-3" />
+                          <span>{item.contributors} contributors</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{item.lastUpdated}</span>
+                        </div>
                       </div>
                     </div>
 
@@ -387,7 +351,13 @@ export default function MarketplacePage() {
                         className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-md transition-all duration-200 text-sm"
                         size="sm"
                       >
-                        Invest In
+                        Join Research
+                      </Button>
+                      <Button
+                        className="bg-gradient-to-r from-blue-600 to-green-600 text-white hover:shadow-md transition-all duration-200 text-sm"
+                        size="sm"
+                      >
+                        Invest
                       </Button>
                     </div>
                   </CardContent>
@@ -402,11 +372,9 @@ export default function MarketplacePage() {
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">
               {selectedCategory === "all"
-                ? "All Items"
+                ? "All Research Proposals"
                 : categories.find((c) => c.id === selectedCategory)?.title}
-              <span className="text-gray-500 font-normal ml-2">
-                ({filteredItems.length} items)
-              </span>
+              <span className="text-gray-500 font-normal ml-2">({filteredItems.length} proposals)</span>
             </h3>
           </div>
 
@@ -419,41 +387,25 @@ export default function MarketplacePage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="text-2xl mb-2">{item.image}</div>
-                    <div className="flex gap-1">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => toggleFavorite(item.id)}
-                        className={`p-1 h-6 w-6 ${
-                          favorites.includes(item.id)
-                            ? "text-red-500"
-                            : "text-gray-400"
-                        }`}
-                      >
-                        <Heart
-                          className="w-3 h-3"
-                          fill={
-                            favorites.includes(item.id)
-                              ? "currentColor"
-                              : "none"
-                          }
-                        />
-                      </Button>
-                    </div>
                   </div>
                   <CardTitle className="text-sm group-hover:text-purple-700 transition-colors line-clamp-2">
                     {item.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between text-xs text-gray-500"></div>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <Users className="w-3 h-3" />
+                      <span>{item.contributors} contributors</span>
+                    </div>
+                  </div>
 
                   <div className="flex items-center justify-between">
                     <Button
                       className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-md transition-all duration-200"
                       size="sm"
                     >
-                      Invest In
+                      Join Research
                     </Button>
                   </div>
                 </CardContent>
@@ -464,16 +416,12 @@ export default function MarketplacePage() {
           {filteredItems.length === 0 && (
             <div className="text-center py-12">
               <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                No items found
-              </h3>
-              <p className="text-gray-600">
-                Try adjusting your search or filter criteria
-              </p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No research proposals found</h3>
+              <p className="text-gray-600">Try adjusting your search or filter criteria</p>
             </div>
           )}
         </div>
       </div>
     </LayoutWrapper>
-  );
+  )
 }
