@@ -21,6 +21,7 @@ from git_functions import (
     fork_repository,
     merge_pull_request_func,
     pull_chain,
+    close,
 )
 from globals import write_global_action_map, read_global_action_map
 
@@ -48,6 +49,7 @@ You can use the following functions:
     "checkout_branch"
     "pull"
     "list_files"
+    "close"
     "list_pull_requests"
     "update_pull_request"
     "fork_repo"
@@ -333,6 +335,15 @@ tools = [
             "required": []
         }
     }
+    {
+        "type": "function",
+        "name": "close",
+        "description": "CLOSE THE PULL REQUEST",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+    }
 ]
 
 def query_openai_chat(query: str) -> str:
@@ -367,6 +378,7 @@ function_map = {
     "list_branches": list_branches,
     "list_repositories": list_repositories,
     "pull_chain": pull_chain,
+    "close": close,
 }
 
 @versionner.on_message(model=Versionner_Request)
