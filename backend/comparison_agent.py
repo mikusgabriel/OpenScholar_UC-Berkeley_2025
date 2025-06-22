@@ -252,43 +252,43 @@ def ultra_condenser(paper_reviews):
 
     return response.output_parsed.model_dump()
 
-    def get_Review(paper_description, pr):
-        similar_papers = search_arxiv_ids(paper_description, limit=5)
-        info_papers = []
-        for papers in similar_papers:
-            info_papers.append({
+def get_Review(paper_description, pr):
+    similar_papers = search_arxiv_ids(paper_description, limit=5)
+    info_papers = []
+    for papers in similar_papers:
+        info_papers.append({
+            "arxiv_id": papers["arxiv_id"],
+            "title": papers["title"],
+            "info": extract_info(papers["arxiv_id"])
+        }
+        )
+    per_section_pr = []
+
+    for papers in info_papers:
+        reviews = []
+        for sections in papers["info"]:
+            if sections["relevant"] == True:
+
+                print(f'Reviewing: {sections["info_type"]}')
+                reviews.append(comparison_result(
+                    sections["relevant_info"], pr))
+
+        per_section_pr.append({
+            "arxiv_id": papers["arxiv_id"],
+            "title": papers["title"],
+            "comparison": reviews
+        })
+
+    per_paper_pr = []
+
+    for papers in per_section_pr:
+        if papers["comparison"]:
+            per_paper_pr.append({
                 "arxiv_id": papers["arxiv_id"],
                 "title": papers["title"],
-                "info": extract_info(papers["arxiv_id"])
-            }
-            )
-        per_section_pr = []
-
-        for papers in info_papers:
-            reviews = []
-            for sections in papers["info"]:
-                if sections["relevant"] == True:
-
-                    print(f'Reviewing: {sections["info_type"]}')
-                    reviews.append(comparison_result(
-                        sections["relevant_info"], pr))
-
-            per_section_pr.append({
-                "arxiv_id": papers["arxiv_id"],
-                "title": papers["title"],
-                "comparison": reviews
+                "review": condenser(papers["comparison"])
             })
 
-        per_paper_pr = []
+    pr = ultra_condenser(per_paper_pr)
 
-        for papers in per_section_pr:
-            if papers["comparison"]:
-                per_paper_pr.append({
-                    "arxiv_id": papers["arxiv_id"],
-                    "title": papers["title"],
-                    "review": condenser(papers["comparison"])
-                })
-
-        pr = ultra_condenser(per_paper_pr)
-
-        return pr
+    return pr
