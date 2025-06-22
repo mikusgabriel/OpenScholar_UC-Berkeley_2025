@@ -8,6 +8,7 @@ import MarkdownEditor from "@/components/MarkdownEditor"
 import LayoutWrapper from "@/components/layout-wrapper"
 import VoiceRecorder from "@/components/VoiceRecorder"
 import { RequestExport } from "@/api/api"
+import { MARKDOWN_CONTENT } from "@/util/constants"
 
 // Mock API functions - replace with your actual implementati`ons
 const CreateRepo = (name: string, description: string) => console.log("Creating repo:", name, description)
@@ -16,7 +17,7 @@ const CreatePullRequest = (repo: string, title: string, head: string, base: stri
     console.log("Creating PR:", { repo, title, head, base, description })
 
 export default function App() {
-    const [content, setContent] = useState<string>("")
+    const [content, setContent] = useState<string>(MARKDOWN_CONTENT)
     const [message, setMessage] = useState<string>("")
 
     return (
