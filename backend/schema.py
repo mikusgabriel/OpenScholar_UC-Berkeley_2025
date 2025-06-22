@@ -63,6 +63,3 @@ class Transferer_Response(Model):
 class Branch_Request(Model):
     repository_name: str
 
-
-class Repository_Request(Model):
-    repository_name: str

@@ -1,6 +1,6 @@
 from openai import OpenAI
 from uagents import Agent
-from schema import Versionner_Request, Branch_Request, Repository_Request
+from schema import Versionner_Request, Branch_Request
 import dotenv
 import os
 import json
@@ -19,7 +19,8 @@ from git_functions import (
     create_pull_request_func,
     update_pull_request_func,
     fork_repository,
-    merge_pull_request_func
+    merge_pull_request_func,
+    pull_chain,
 )
 from globals import write_global_action_map, read_global_action_map
 
@@ -34,6 +35,7 @@ PROMPT_TEMPLATE = """
 You are an AI backend automation agent for version control. You have functions you can call that allow you to interact with github, call upon them to satisfy the user's request
 Do not include any other text or explanations.
 branch is main by default.
+IF USER SAYS SOMETHING LIKE: I want to create a pull request for my research paper with description: test-repo  test-repo,THEN USE TOOL pull_chain
 YOUR username is testgyaccount
 
 If the user does not specify a branch, use main.
@@ -47,10 +49,10 @@ You can use the following functions:
     "pull"
     "list_files"
     "list_pull_requests"
-    "create_pull_request"
     "update_pull_request"
     "fork_repo"
     "merge_pull_request"
+    "pull_chain"
 Here is the user query:
 """
 
@@ -217,37 +219,6 @@ tools = [
     },
     {
         "type": "function",
-        "name": "create_pull_request_func",
-        "description": "Create a new pull request.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "repo": {
-                    "type": "string",
-                    "description": "Repository name."
-                },
-                "title": {
-                    "type": "string",
-                    "description": "Title of the PR."
-                },
-                "head": {
-                    "type": "string",
-                    "description": "Branch where changes are implemented."
-                },
-                "base": {
-                    "type": "string",
-                    "description": "Branch you want to merge into."
-                },
-                "body": {
-                    "type": "string",
-                    "description": "Description of the PR."
-                }
-            },
-            "required": ["repo", "title", "head", "base"]
-        }
-    },
-    {
-        "type": "function",
         "name": "update_pull_request_func",
         "description": "Update an existing pull request.",
         "parameters": {
@@ -326,6 +297,16 @@ tools = [
             },
             "required": ["repo", "pull_number"]
         }
+    },
+    {
+        "type": "function",
+        "name": "pull_chain",
+        "description": "CREATE A PULL REQUEST FOR A RESEARCH PAPER",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+        }
     }
 ]
 
@@ -360,12 +341,13 @@ function_map = {
     "merge_pull_request_func": merge_pull_request_func,
     "list_repository_branches": list_repository_branches,
     "list_repositories": list_repositories,
+    "pull_chain": pull_chain,
 }
 
 @versionner.on_message(model=Versionner_Request)
 async def handle_review(ctx, sender: str, msg: Versionner_Request):
     ctx.logger.info(msg.content["type"] + " " + msg.content["content"] + " " + msg.content["message"])
-    result = query_openai_chat(msg.content["type"] + " " + msg.content["content"] + " " + msg.content["message"])
+    result = query_openai_chat(msg.content["type"] + " File Content:" + msg.content["content"] + " " + msg.content["message"])
     ctx.logger.info(result)
     function_name = result[0].name
     arguments = json.loads(result[0].arguments)
