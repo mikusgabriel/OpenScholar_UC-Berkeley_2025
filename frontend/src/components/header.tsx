@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom"
-import { FileText, Menu, X } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { useState } from "react"
+import logo from "../assets/logo.png"
 
 export default function Header() {
   const location = useLocation()
@@ -27,15 +28,13 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo and Brand */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <FileText className="w-4 h-4 text-white" />
-              </div>
+            <Link to="/" className="flex items-center gap-3">
+              <img src={logo} alt="OpenScholar Logo" className="w-12 h-12" />
               <div className="flex flex-col">
-                <h1 className="text-lg font-semibold text-gray-900 leading-tight">OpenScholar</h1>
+                <h1 className="text-lg font-semibold text-gray-900 leading-tight"></h1>
 
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
@@ -46,8 +45,8 @@ export default function Header() {
                   key={link.href}
                   to={link.href}
                   className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ease-in-out ${isActiveLink(link.href)
-                      ? "text-white bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg shadow-purple-500/25"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-white/60"
+                    ? "text-white bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg shadow-purple-500/25"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-white/60"
                     }`}
                 >
                   {link.label}
@@ -86,8 +85,8 @@ export default function Header() {
                 to={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`block px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActiveLink(link.href)
-                    ? "text-white bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg shadow-purple-500/25"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? "text-white bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg shadow-purple-500/25"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                   }`}
               >
                 {link.label}

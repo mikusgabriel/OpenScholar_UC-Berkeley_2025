@@ -330,7 +330,7 @@ export async function getPaperContent(paperTitle: string) {
         const response = await fetch(url, {
             headers: {
                 'Accept': 'application/vnd.github.raw+json',
-                'Authorization': `Bearer ${import.meta.env.VITE_GITHUB_API_KEY}`
+                'Authorization': ''
             }
         });
 

@@ -13,10 +13,10 @@ function App() {
         <Route path="/" element={<Navigate to="/papers" replace />} />
         <Route path="/marketplace" element={<MarketPlacePage />} />
         <Route path="/account" element={<AccountPage />} />
-        <Route path='/pull-request' element={<PullRequestsPage />} />
+        <Route path='/papers/:title/pull-request' element={<PullRequestsPage />} />
         <Route path="/papers" element={<PapersPage />} />
-        <Route path="/papers/:id" element={<PaperDetailPage />} />
-        <Route path="/papers/:id/edit" element={<EditorPage />} />
+        <Route path="/papers/:title" element={<PaperDetailPage />} />
+        <Route path="/papers/:title/edit" element={<EditorPage />} />
       </Routes>
     </Router>
   );
