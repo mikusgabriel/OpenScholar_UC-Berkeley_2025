@@ -262,9 +262,7 @@ export default function MarketplacePage() {
                 <h2 className="text-2xl font-bold text-gray-900">
                   Marketplace
                 </h2>
-                <p className="text-gray-600">
-                  Discover templates, tools, and resources for your research
-                </p>
+                <p className="text-gray-600">Discover topics to invest in.</p>
               </div>
             </div>
           </div>
