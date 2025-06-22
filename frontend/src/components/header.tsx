@@ -8,10 +8,18 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const navLinks = [
-    { href: "/", label: "Papers" },
+    { href: "/papers", label: "Papers" },
     { href: "/account", label: "My Account" },
     { href: "/marketplace", label: "Marketplace" },
   ]
+
+  // Helper function to check if a link is active
+  const isActiveLink = (href: string) => {
+    if (href === "/papers") {
+      return pathname === "/papers" || pathname.startsWith("/papers/")
+    }
+    return pathname === href
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
@@ -25,7 +33,7 @@ export default function Header() {
               </div>
               <div className="flex flex-col">
                 <h1 className="text-lg font-semibold text-gray-900 leading-tight">Research Editor</h1>
-                
+
               </div>
             </div>
           </div>
@@ -37,14 +45,13 @@ export default function Header() {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ease-in-out ${
-                    pathname === link.href
+                  className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ease-in-out ${isActiveLink(link.href)
                       ? "text-white bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg shadow-purple-500/25"
                       : "text-gray-600 hover:text-gray-900 hover:bg-white/60"
-                  }`}
+                    }`}
                 >
                   {link.label}
-                  {pathname === link.href && (
+                  {isActiveLink(link.href) && (
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full -z-10 animate-pulse opacity-20"></div>
                   )}
                 </Link>
@@ -69,9 +76,8 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         <div
-          className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
-            isMobileMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${isMobileMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+            }`}
         >
           <nav className="py-4 space-y-2">
             {navLinks.map((link) => (
@@ -79,11 +85,10 @@ export default function Header() {
                 key={link.href}
                 to={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                  pathname === link.href
+                className={`block px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActiveLink(link.href)
                     ? "text-white bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg shadow-purple-500/25"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
+                  }`}
               >
                 {link.label}
               </Link>

@@ -10,11 +10,53 @@ import {
   Plus,
   Minus,
   ArrowRight,
+  ChevronDown,
+  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { useState, useEffect } from "react"
+import { getRepositoryBranches } from "@/api/api"
 
 export default function PullRequestPage() {
+  const [selectedBranch, setSelectedBranch] = useState("main")
+  const [isBranchDropdownOpen, setIsBranchDropdownOpen] = useState(false)
+  const [branches, setBranches] = useState<Array<{ name: string, isDefault: boolean }>>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch branches from API
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        setLoading(true)
+        // Using a mock repository name - in real app this would come from props or URL params
+        const branchData = await getRepositoryBranches("ml-healthcare-research")
+        const formattedBranches = branchData.map(branch => ({
+          name: branch.name,
+          isDefault: branch.name === "main"
+        }))
+        setBranches(formattedBranches)
+        if (formattedBranches.length > 0) {
+          setSelectedBranch(formattedBranches[0].name)
+        }
+      } catch (error) {
+        console.error("Error fetching branches:", error)
+        // Fallback to mock data
+        setBranches([
+          { name: "main", isDefault: true },
+          { name: "feature/methodology-section", isDefault: false },
+          { name: "feature/data-analysis", isDefault: false },
+          { name: "feature/validation", isDefault: false },
+          { name: "bugfix/typo-fixes", isDefault: false },
+        ])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchBranches()
+  }, [])
+
   const pullRequest = {
     id: 42,
     title: "Add comprehensive methodology section to research paper",
@@ -113,9 +155,7 @@ The methodology section follows the journal's guidelines and includes all necess
                     <span>{pullRequest.author.name}</span>
                   </div>
                   <span>•</span>
-                  <span>
-                    #{pullRequest.id} opened {pullRequest.createdAt}
-                  </span>
+                  <span>#{pullRequest.id} opened {pullRequest.createdAt}</span>
                   <span>•</span>
                   <span>Updated {pullRequest.updatedAt}</span>
                 </div>
@@ -128,6 +168,59 @@ The methodology section follows the journal's guidelines and includes all necess
                     <span>{pullRequest.branch}</span>
                     <ArrowRight className="w-4 h-4" />
                     <span>{pullRequest.target}</span>
+                  </div>
+                </div>
+
+                {/* Branch Dropdown */}
+                <div className="relative mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Current Branch</label>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsBranchDropdownOpen(!isBranchDropdownOpen)}
+                      disabled={loading}
+                      className="w-full flex items-center justify-between px-3 py-2 bg-white/80 border border-purple-200/50 rounded-lg text-sm text-gray-900 hover:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                        <span>{loading ? "Loading branches..." : selectedBranch}</span>
+                        {!loading && branches.find(b => b.name === selectedBranch)?.isDefault && (
+                          <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600">
+                            default
+                          </span>
+                        )}
+                      </div>
+                      <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isBranchDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {isBranchDropdownOpen && !loading && (
+                      <div className="absolute z-10 w-full mt-1 bg-white/95 backdrop-blur-sm border border-purple-200/50 rounded-lg shadow-lg shadow-purple-500/10 overflow-hidden">
+                        {branches.map((branch) => (
+                          <button
+                            key={branch.name}
+                            onClick={() => {
+                              setSelectedBranch(branch.name)
+                              setIsBranchDropdownOpen(false)
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-purple-50/50 transition-colors duration-200 ${selectedBranch === branch.name ? 'bg-purple-100/50 text-purple-700' : 'text-gray-700'
+                              }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                              <span>{branch.name}</span>
+                              {branch.isDefault && (
+                                <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600">
+                                  default
+                                </span>
+                              )}
+                            </div>
+                            {selectedBranch === branch.name && (
+                              <CheckCircle className="w-4 h-4 text-purple-600" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

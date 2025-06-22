@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +16,8 @@ import LayoutWrapper from "@/components/layout-wrapper";
 import VoiceRecorder from "@/components/VoiceRecorder";
 import { RequestExport } from "@/api/api";
 
-export default function App() {
+export default function EditorPage() {
+  const { id } = useParams();
   const [content, setContent] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
