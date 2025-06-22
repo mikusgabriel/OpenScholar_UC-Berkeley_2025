@@ -184,4 +184,4 @@ def pull_chain():
     print(checkout_existing_branch("test-repo", "mybranch"))
     print(commit_file_to_repo("test-repo", "changes.txt", "changes ", "changes ", "mybranch"))
     a = create_pull_request_func("test-repo", "test", "mybranch", "main", "test")
-    return {"status_code": resp.status_code, "data": a.json()}
+    return {"status_code": resp.status_code, "data": a.json()}  # type: ignore # noqa: F821
