@@ -1,3 +1,6 @@
+
+
+
 export async function RequestExport(content: string) {
     try {
         console.log("Sending transcript for export:", content);
@@ -119,7 +122,7 @@ export async function getRepositoryBranches(repositoryName: string): Promise<Rep
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function getRepositoryFiles(repositoryName: string): Promise<RepositoryInfo | null> {
+export async function getRepositoryFiles(repositoryName: string): Promise<Array<any> | null> {
     try {
         console.log("Repository Name: " + repositoryName);
         const response = await fetch("http://localhost:8000/rest/post", {
@@ -140,8 +143,7 @@ export async function getRepositoryFiles(repositoryName: string): Promise<Reposi
         }
 
         const data = await response.json();
-        console.log(data);
-        return data.data || null;
+        return data.content.content.data.tree;
     } catch (error) {
         console.error("Error fetching repository info:", error);
         return null;
@@ -173,7 +175,7 @@ export async function getRepositoriesList(): Promise<RepositoryInfo[]> {
         console.log(data);
         // const files = await getRepositoryFiles(data.content.content.data[0].name);
         // console.log(files);
-        const branches = await getRepositoryBranches(data.content.content.data[0].name);
+        // const branches = await getRepositoryBranches(data.content.content.data[0].name);
 
         return data.content.content.data || [];
     } catch (error) {
@@ -275,12 +277,12 @@ export async function getPapersList(): Promise<Paper[]> {
                     status: "active"
                 }
             ];
-            return mockPapers;
+            return mockPapers.slice(0, 3);
         }
 
         // Convert repositories to papers format
         const papers: Paper[] = await Promise.all(
-            repositories.map(async (repo, index) => {
+            repositories.slice(0, 3).map(async (repo, index) => {
                 // Try to get branches for each repository
                 // let branches: string[] = ["main"];
                 // try {
@@ -309,5 +311,38 @@ export async function getPapersList(): Promise<Paper[]> {
     } catch (error) {
         console.error("Error fetching papers list:", error);
         return [];
+    }
+}
+
+export async function getPaperContent(paperTitle: string) {
+    try {
+        // Get repository files
+        const files = await getRepositoryFiles(paperTitle);
+
+        if (!files) {
+            console.error("Repository files not found for:", paperTitle);
+            return "";
+        }
+
+        const file = files[0];
+        const url = file.url
+
+        const response = await fetch(url, {
+            headers: {
+                'Accept': 'application/vnd.github.raw+json',
+                'Authorization': `Bearer ${import.meta.env.VITE_GITHUB_API_KEY}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch content: ${response.status}`);
+        }
+
+        const content = await response.text();
+        return content;
+
+    } catch (error) {
+        console.error("Error fetching paper content:", error);
+        return "";
     }
 }

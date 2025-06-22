@@ -1,58 +1,44 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import LayoutWrapper from "@/components/layout-wrapper";
 import { FileText, Calendar, User, GitBranch, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import type { Paper } from "@/api/api";
+import { getPaperContent } from "@/api/api";
 
 interface LocationState {
     paper?: Paper;
 }
 
 export default function PaperDetailPage() {
-    const { id: title } = useParams();
+    const { title } = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
     const { paper: passedPaper } = (location.state as LocationState) || {};
 
-    const [currentPaper, setCurrentPaper] = useState<Paper | null>(passedPaper || null);
+    const [currentPaper, setCurrentPaper] = useState<Paper | null>(passedPaper || null); // empty forsome reason
+    const [paperContent, setPaperContent] = useState<string>("");
     const [loading, setLoading] = useState(!passedPaper);
     const [error, setError] = useState<string | null>(null);
 
+    // Fetch paper content when paper is available
     useEffect(() => {
-        // If we have the paper data from navigation state, use it
-        if (passedPaper) {
-            setCurrentPaper(passedPaper);
-            setLoading(false);
-            return;
-        }
-
-        // Otherwise, fetch the paper data
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-
-                if (!title) {
-                    setError("Paper title is required");
-                    return;
+        const fetchContent = async () => {
+            if (title) {
+                try {
+                    console.log("Fetching content for paper:", title);
+                    const content = await getPaperContent(title);
+                    console.log("Received content:", content);
+                    setPaperContent(content);
+                    setLoading(false);
+                } catch (err) {
+                    console.error("Error fetching paper content:", err);
                 }
-
-                const paper = await getPaperById(title);
-                if (paper) {
-                    setCurrentPaper(paper);
-                } else {
-                    setError("Paper not found");
-                }
-            } catch (err) {
-                setError("Failed to fetch paper data");
-                console.error("Error fetching paper data:", err);
-            } finally {
-                setLoading(false);
             }
         };
 
-        fetchData();
-    }, [title, passedPaper]);
+        fetchContent();
+    }, [title, paperContent]);
 
     if (loading) {
         return (
@@ -146,7 +132,9 @@ export default function PaperDetailPage() {
                                         View Pull Requests
                                     </Button>
                                     <Button
-                                        onClick={() => window.location.href = `/papers/${currentPaper.title}/edit`}
+                                        onClick={() => navigate(`/papers/${currentPaper.title}/edit`, {
+                                            state: { content: paperContent }
+                                        })}
                                         className="bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-lg hover:shadow-green-500/25 transition-all duration-200"
                                     >
                                         Edit Paper
@@ -156,6 +144,18 @@ export default function PaperDetailPage() {
                         </div>
                     </div>
                 </div>
+
+                {/* Paper Content Section */}
+                {paperContent && (
+                    <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl shadow-purple-500/5">
+                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Paper Content</h2>
+                        <div className="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                            <pre className="text-sm text-gray-700 whitespace-pre-wrap font-mono">
+                                {paperContent}
+                            </pre>
+                        </div>
+                    </div>
+                )}
             </div>
         </LayoutWrapper>
     );
