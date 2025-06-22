@@ -121,7 +121,7 @@ def list_files(repo, branch="main"):
     resp = requests.get(url, headers=headers)
     return {"status_code": resp.status_code, "data": resp.json()}
 
-def list_repository_branches(repo):
+def list_branches(repo):
     url = f"{GITHUB_API_URL}/repos/{USERNAME}/{repo}/branches"
     resp = requests.get(url, headers=headers)
     return {"status_code": resp.status_code, "data": resp.json()}

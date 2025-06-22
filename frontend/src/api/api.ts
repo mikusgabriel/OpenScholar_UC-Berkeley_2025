@@ -97,7 +97,12 @@ export async function getRepositoryBranches(repositoryName: string): Promise<Rep
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                repository_name: repositoryName,
+                request: "Get the branches of the repository " + repositoryName,
+                content: {
+                    "type": "versionner",
+                    "content": "get_repository_branches",
+                    "message": "Get the branches of the repository " + repositoryName,
+                }
             }),
         });
 

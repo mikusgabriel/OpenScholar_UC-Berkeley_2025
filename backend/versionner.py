@@ -12,7 +12,7 @@ from git_functions import (
     checkout_existing_branch,
     pull_branch_commit,
     list_files,
-    list_repository_branches,
+    list_branches,
     get_repository_info,
     list_repositories,
     list_pull_requests,
@@ -300,6 +300,21 @@ tools = [
     },
     {
         "type": "function",
+        "name": "list_branches",
+        "description": "LIST ALL BRANCHES IN THE REPOSITORY",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            "repo": {
+                "type": "string",
+                "description": "Repository name."
+            }
+            },
+            "required": ["repo"]
+        }
+    },
+    {
+        "type": "function",
         "name": "list_repositories",
         "description": "LIST ALL REPOSITORIES IN THE USER'S ACCOUNT",
         "parameters": {
@@ -349,7 +364,7 @@ function_map = {
     "update_pulupdate_pull_request_funcl_request": update_pull_request_func,
     "fork_repository": fork_repository,
     "merge_pull_request_func": merge_pull_request_func,
-    "list_repository_branches": list_repository_branches,
+    "list_branches": list_branches,
     "list_repositories": list_repositories,
     "pull_chain": pull_chain,
 }

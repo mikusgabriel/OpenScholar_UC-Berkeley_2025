@@ -1,5 +1,5 @@
 import LayoutWrapper from "@/components/layout-wrapper";
-import { FileText, Calendar, User, GitBranch, Loader2 } from "lucide-react";
+import { Calendar, User, GitBranch, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { getPapersList } from "@/api/api";
