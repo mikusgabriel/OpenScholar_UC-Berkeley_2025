@@ -7,7 +7,8 @@ GLOBAL_ACTION_MAP_FILE = "global_action_map.json"
 # Initialize map if file doesn't exist
 if not os.path.exists(GLOBAL_ACTION_MAP_FILE):
     with open(GLOBAL_ACTION_MAP_FILE, "w") as f:
-        json.dump({"exporter": {}, "reviewer": {}, "versionner": {}}, f)
+        json.dump({"exporter": {}, "reviewer": {},
+                  "versionner": {}, "transferrer": {}}, f)
 
 
 def read_global_action_map(agent_type: str):

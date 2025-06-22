@@ -3,6 +3,12 @@ from typing import Dict, Any
 from cosmpy.crypto.keypairs import PrivateKey
 from cosmpy.aerial.wallet import LocalWallet
 from cosmpy.aerial.client import LedgerClient, NetworkConfig
+from uagents import Agent, Context
+from schema import Transferer_Response, Transferer_Request
+from globals import write_global_action_map
+
+transferrer = Agent(name="transferrer", seed="transferrer",
+                    port=8004, endpoint="http://localhost:8004/submit")
 
 # Default network: Fetch.ai Dorado testnet
 DEFAULT_NETWORK = NetworkConfig.fetchai_dorado_testnet()
@@ -62,7 +68,7 @@ def send_token(amount: int, hex_priv: str, to_address: str, denom: str = "atestf
     """
     client = LedgerClient(DEFAULT_NETWORK)
     wallet = wallet_create(hex_priv)
-    return client.send_tokens(to_address, amount, denom,wallet)
+    return client.send_tokens(to_address, amount, denom, wallet)
 
 
 def add_token(hex_priv: str, amount: int, denom: str = "atestfet") -> Dict[str, Any]:
@@ -77,4 +83,42 @@ def add_token(hex_priv: str, amount: int, denom: str = "atestfet") -> Dict[str, 
     """
     client = LedgerClient(DEFAULT_NETWORK)
     wallet1 = wallet_create(hex_priv)
-    return send_token(amount, BANK_ADDRESS, wallet1.address(),denom)
+    return send_token(amount, BANK_ADDRESS, wallet1.address(), denom)
+
+
+@transferrer.on_message(model=Transferer_Request)
+async def handle_review(ctx: Context, sender: str, msg: Transferer_Request):
+    ctx.logger.info(
+        "Received POST request with content: %s", msg.content)
+    result = None
+    if msg.content.type == "add_token":
+        result = add_token(msg.content.hex_priv, msg.content.amount)
+        ctx.logger.info("Token added to BANK_ADDRESS: %s", result)
+
+    elif msg.content.type == "send_token":
+        result = send_token(
+            msg.content.amount,
+            msg.content.hex_priv,
+            msg.content.to_address,
+        )
+        ctx.logger.info("Token sent to user address: %s", result)
+
+    elif msg.content.type == "view_amount":
+        result = view_amount(msg.content.hex_priv)
+        ctx.logger.info("Wallet balance: %s", result)
+
+    elif msg.content.type == "get_address":
+        result = get_self_address(msg.content.hex_priv)
+        ctx.logger.info("Derived wallet address: %s", result)
+
+    elif msg.content.type == "generate_wallet":
+        result = generate_wallet_key()
+        ctx.logger.info("Generated wallet key: %s", result)
+
+    else:
+        ctx.logger.warning("Unknown message type: %s", msg.content.type)
+
+    write_global_action_map({"transferrer": result})
+
+if __name__ == "__main__":
+    transferrer.run()
