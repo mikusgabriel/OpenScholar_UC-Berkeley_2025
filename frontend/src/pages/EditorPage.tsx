@@ -77,8 +77,8 @@ export default function EditorPage() {
             console.error("Export failed:", error);
         }
     }
-    async function RequestAgentComplete() {
-        const request = { id: id };
+    async function RequestAgentComplete(price: string) {
+        const request = { type: id, content: price };
         try {
             const response = await fetch("http://localhost:8000/rest/post/complete", {
                 method: "POST",
