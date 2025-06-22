@@ -28,7 +28,7 @@ dotenv.load_dotenv()
 
 
 versionner = Agent("versionner", seed="versionner", port=8001,
-                   endpoint="http://localhost:8001/submit")
+                   endpoint="http://localhost:8001/submit", mailbox=True)
 
 CHAT_MODEL = "gpt-4.1-nano"
 PROMPT_TEMPLATE = """
