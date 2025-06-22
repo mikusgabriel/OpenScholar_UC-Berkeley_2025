@@ -4,7 +4,6 @@ import {
   GitMerge,
   GitCommit,
   MessageSquare,
-  Eye,
   CheckCircle,
   Clock,
   FileText,
@@ -29,9 +28,8 @@ export default function PullRequestPage() {
 
 The methodology section follows the journal's guidelines and includes all necessary details for reproducibility.`,
     author: {
-      name: "Dr. Sarah Chen",
-      avatar: "SC",
-      email: "sarah.chen@university.edu",
+      name: "AI Reviewer",
+      avatar: "AR",
     },
     status: "open",
     branch: "feature/methodology-section",
@@ -42,8 +40,7 @@ The methodology section follows the journal's guidelines and includes all necess
     createdAt: "3 days ago",
     updatedAt: "2 hours ago",
     reviewers: [
-      { name: "Prof. Michael Rodriguez", status: "approved", avatar: "MR" },
-      { name: "Dr. Emily Watson", status: "pending", avatar: "EW" },
+      { name: "AI Reviewer", status: "pending", avatar: "AR" },
     ],
   }
 
@@ -51,34 +48,10 @@ The methodology section follows the journal's guidelines and includes all necess
     {
       id: "a1b2c3d",
       message: "Add initial methodology framework",
-      author: "Dr. Sarah Chen",
+      author: "AI Reviewer",
       time: "3 days ago",
       additions: 89,
       deletions: 2,
-    },
-    {
-      id: "e4f5g6h",
-      message: "Include data collection procedures",
-      author: "Dr. Sarah Chen",
-      time: "2 days ago",
-      additions: 156,
-      deletions: 8,
-    },
-    {
-      id: "i7j8k9l",
-      message: "Add statistical analysis methods",
-      author: "Dr. Sarah Chen",
-      time: "1 day ago",
-      additions: 134,
-      deletions: 5,
-    },
-    {
-      id: "m0n1o2p",
-      message: "Include ethical considerations section",
-      author: "Dr. Sarah Chen",
-      time: "2 hours ago",
-      additions: 77,
-      deletions: 8,
     },
   ]
 
@@ -117,15 +90,7 @@ The methodology section follows the journal's guidelines and includes all necess
         "Great work on the methodology section! The data collection procedures are very thorough. I have a few minor suggestions for the statistical analysis part.",
       time: "1 day ago",
       type: "review",
-    },
-    {
-      id: 2,
-      author: { name: "Dr. Sarah Chen", avatar: "SC" },
-      content:
-        "Thanks for the feedback! I've addressed the statistical analysis concerns and added more details about the power analysis calculations.",
-      time: "6 hours ago",
-      type: "comment",
-    },
+    }
   ]
 
   return (
@@ -168,13 +133,6 @@ The methodology section follows the journal's guidelines and includes all necess
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                className="bg-white/80 border-purple-200/50 text-gray-800 hover:bg-purple-50/50"
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                Subscribe
-              </Button>
               <Button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-lg hover:shadow-green-500/25 transition-all duration-200">
                 <GitMerge className="w-4 h-4 mr-2" />
                 Merge Pull Request
@@ -227,19 +185,19 @@ The methodology section follows the journal's guidelines and includes all necess
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-2 h-2 rounded-full ${file.status === "added"
-                            ? "bg-green-500"
-                            : file.status === "modified"
-                              ? "bg-blue-500"
-                              : "bg-red-500"
+                          ? "bg-green-500"
+                          : file.status === "modified"
+                            ? "bg-blue-500"
+                            : "bg-red-500"
                           }`}
                       ></div>
                       <span className="font-mono text-sm text-gray-800">{file.name}</span>
                       <span
                         className={`px-2 py-1 rounded text-xs font-medium ${file.status === "added"
-                            ? "bg-green-100 text-green-700"
-                            : file.status === "modified"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-red-100 text-red-700"
+                          ? "bg-green-100 text-green-700"
+                          : file.status === "modified"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-red-100 text-red-700"
                           }`}
                       >
                         {file.status}

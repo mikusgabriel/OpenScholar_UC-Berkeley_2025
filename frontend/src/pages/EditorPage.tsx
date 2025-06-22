@@ -50,15 +50,6 @@ export default function App() {
 
                             <div className="space-y-2">
                                 <Button
-                                    onClick={() => CreateRepo(message, "Research paper repository")}
-                                    className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white text-xs py-2 shadow-lg hover:shadow-green-500/25 transition-all duration-200"
-                                    size="sm"
-                                >
-                                    <Plus className="w-3 h-3 mr-1" />
-                                    Create Repository
-                                </Button>
-
-                                <Button
                                     onClick={() => Commit(message, content)}
                                     variant="outline"
                                     className="w-full bg-white/80 border-purple-200/50 text-gray-800 hover:bg-purple-50/50 hover:border-purple-300 text-xs py-2 transition-all duration-200"
@@ -72,9 +63,9 @@ export default function App() {
                             <Separator className="bg-purple-200/30" />
 
                             <Button
-                                onClick={() =>
-                                    CreatePullRequest("first-repo", message, "main", "main", "Description for pull request")
-                                }
+                                onClick={() => {
+                                    window.location.href = "/pull-request";
+                                }}
                                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-xs py-2 shadow-lg hover:shadow-blue-500/25 transition-all duration-200"
                                 size="sm"
                             >
